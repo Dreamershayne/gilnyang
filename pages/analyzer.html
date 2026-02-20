@@ -77,13 +77,22 @@
         </div>
       </div>
 
+      <!-- 모델 로딩 표시 -->
+      <div id="model-loading" style="text-align:center; padding:24px; color:var(--color-text-muted); font-size:14px;">
+        🤖 AI 모델 로딩 중...
+      </div>
+
       <!-- 분석 결과 (분석 후 표시) -->
       <div id="result-area" style="display:none; margin-top:32px;">
-        <div class="card">
+        <!-- 1등 결과 -->
+        <div class="card" style="margin-bottom:20px;">
           <h2 style="font-size:20px; font-weight:700; margin-bottom:16px;">📊 분석 결과</h2>
-          <div id="result-content">
-            <!-- JS로 결과 삽입 -->
-          </div>
+          <div id="result-content"></div>
+        </div>
+        <!-- 전체 확률 목록 -->
+        <div class="card">
+          <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--color-text-muted);">전체 품종별 확률</h3>
+          <div id="result-bars"></div>
         </div>
       </div>
 
@@ -96,7 +105,10 @@
     </div>
   </footer>
 
+  <!-- Teachable Machine 필수 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
   <script type="module" src="/main.js"></script>
-  <script type="module" src="/js/analyzer.js"></script>
+  <script src="/js/analyzer.js"></script>
 </body>
 </html>
