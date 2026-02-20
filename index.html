@@ -7,6 +7,511 @@
   <title>길냥이집사 | 반려동물 AI 케어 플랫폼</title>
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="/css/components.css" />
+  <style>
+    /* ===================================================
+       벤토 그리드 홈 레이아웃
+    =================================================== */
+
+    /* 배경 섹션 */
+    .bento-section {
+      background-color: #F5F0E8;
+      padding: 52px 24px 72px;
+    }
+
+    body.dark .bento-section {
+      background-color: #0f0f0f;
+    }
+
+    /* 인트로 타이틀 */
+    .bento-intro {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+
+    .bento-intro__label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1B5E20;
+      background-color: #C8E6C9;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .bento-intro__title {
+      font-size: 54px;
+      font-weight: 900;
+      color: #1B1B1B;
+      line-height: 1.18;
+      margin-bottom: 14px;
+    }
+
+    .bento-intro__title .highlight {
+      color: #1B5E20;
+    }
+
+    .bento-intro__desc {
+      font-size: 16px;
+      color: #888;
+      font-weight: 300;
+    }
+
+    body.dark .bento-intro__title { color: #f0f0f0; }
+    body.dark .bento-intro__label { background-color: #1A3D1C; color: #81C784; }
+
+    /* ===== 벤토 그리드 ===== */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 290px 290px 220px 150px;
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ===== 카드 공통 ===== */
+    .bento-card {
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.32s cubic-bezier(.22,.68,0,1.2),
+                  box-shadow 0.32s ease;
+      animation: bentoFadeIn 0.55s ease both;
+    }
+
+    .bento-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.13);
+      z-index: 2;
+    }
+
+    /* 스태거 fade-in */
+    .bento-card:nth-child(1) { animation-delay: 0.04s; }
+    .bento-card:nth-child(2) { animation-delay: 0.10s; }
+    .bento-card:nth-child(3) { animation-delay: 0.16s; }
+    .bento-card:nth-child(4) { animation-delay: 0.22s; }
+    .bento-card:nth-child(5) { animation-delay: 0.28s; }
+    .bento-card:nth-child(6) { animation-delay: 0.34s; }
+    .bento-card:nth-child(7) { animation-delay: 0.40s; }
+
+    @keyframes bentoFadeIn {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 고양이 흔들기 애니메이션 */
+    @keyframes catWiggle {
+      0%   { transform: rotate(0deg) translateY(-16px); }
+      20%  { transform: rotate(-9deg) translateY(-20px); }
+      40%  { transform: rotate(9deg) translateY(-12px); }
+      60%  { transform: rotate(-5deg) translateY(-18px); }
+      80%  { transform: rotate(5deg) translateY(-10px); }
+      100% { transform: rotate(0deg) translateY(-16px); }
+    }
+
+    /* ===== 그리드 포지션 ===== */
+    .bento-card--ai     { grid-column: 1 / 3; grid-row: 1;     background-color: #1B5E20; color: white; }
+    .bento-card--hero   { grid-column: 3;     grid-row: 1 / 3; background-color: #FDFAF4; border: 2px solid #E8E0D0; }
+    .bento-card--stats  { grid-column: 1;     grid-row: 2;     background-color: #1B5E20; color: white; }
+    .bento-card--manual { grid-column: 2;     grid-row: 2;     background-color: #FFFFFF; }
+    .bento-card--comm   { grid-column: 1;     grid-row: 3 / 5; background-color: #E8F5E9; }
+    .bento-card--shop   { grid-column: 2 / 4; grid-row: 3;     background-color: #FDFAF4; border: 2px solid #E8E0D0; }
+    .bento-card--about  { grid-column: 2 / 4; grid-row: 4;     background-color: #43A047; color: white; }
+
+    body.dark .bento-card--hero   { background-color: #1E1E1E; border-color: #333; }
+    body.dark .bento-card--manual { background-color: #1E1E1E; }
+    body.dark .bento-card--comm   { background-color: #1A2E1C; }
+    body.dark .bento-card--shop   { background-color: #1E1E1E; border-color: #333; }
+
+    /* =============================================
+       카드1 — AI 품종 분석기 (그린, wide)
+    ============================================= */
+    .bento-card--ai .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0.65;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .bento-card--ai .card-title {
+      font-size: 40px;
+      font-weight: 900;
+      line-height: 1.18;
+      margin-bottom: 12px;
+    }
+
+    .bento-card--ai .card-desc {
+      font-size: 15px;
+      opacity: 0.78;
+      font-weight: 300;
+      line-height: 1.75;
+      max-width: 300px;
+    }
+
+    .bento-card--ai .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      background: white;
+      color: #1B5E20;
+      padding: 13px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      width: fit-content;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .bento-card--ai .card-cta:hover {
+      background: #f0f0f0;
+      transform: translateX(4px);
+    }
+
+    .bento-card--ai .cat-float {
+      position: absolute;
+      right: 20px;
+      bottom: -8px;
+      width: 168px;
+      height: 168px;
+      object-fit: contain;
+      transform: translateY(-16px);
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .bento-card--ai:hover .cat-float {
+      animation: catWiggle 0.55s ease forwards;
+    }
+
+    /* =============================================
+       카드2 — 히어로 캐릭터 (크림, tall)
+    ============================================= */
+    .bento-card--hero {
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 28px;
+    }
+
+    .bento-card--hero .cat-hero {
+      width: 100%;
+      max-width: 200px;
+      object-fit: contain;
+      transform: translateY(-16px);
+      transition: transform 0.3s ease;
+      margin-top: auto;
+    }
+
+    .bento-card--hero:hover .cat-hero {
+      animation: catWiggle 0.55s ease forwards;
+    }
+
+    .bento-card--hero .hero-brand {
+      font-size: 24px;
+      font-weight: 900;
+      color: #1B5E20;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .bento-card--hero .hero-sub {
+      font-size: 13px;
+      color: #aaa;
+      text-align: center;
+      font-weight: 300;
+      margin-top: 4px;
+    }
+
+    body.dark .bento-card--hero .hero-brand { color: #81C784; }
+    body.dark .bento-card--hero .hero-sub   { color: #777; }
+
+    /* =============================================
+       카드3 — 통계 (딥그린)
+    ============================================= */
+    .bento-card--stats {
+      justify-content: center;
+    }
+
+    .bento-card--stats .stat-big {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 6px;
+    }
+
+    .bento-card--stats .stat-label {
+      font-size: 15px;
+      opacity: 0.72;
+      font-weight: 400;
+      margin-bottom: 24px;
+    }
+
+    .bento-card--stats .stat-row {
+      display: flex;
+      gap: 28px;
+    }
+
+    .bento-card--stats .stat-mini .num {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .bento-card--stats .stat-mini .lbl {
+      font-size: 11px;
+      opacity: 0.65;
+      margin-top: 2px;
+    }
+
+    /* =============================================
+       카드4 — 길냥이 매뉴얼 (흰색)
+    ============================================= */
+    .bento-card--manual .card-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1B5E20;
+      background: #E8F5E9;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .bento-card--manual .card-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1B1B1B;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    .bento-card--manual .steps-mini {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .bento-card--manual .step-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .bento-card--manual .step-num {
+      width: 22px;
+      height: 22px;
+      background: #1B5E20;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    body.dark .bento-card--manual .card-title { color: #f0f0f0; }
+    body.dark .bento-card--manual .step-row   { color: #aaa; }
+
+    /* =============================================
+       카드5 — 커뮤니티 (연그린, tall)
+    ============================================= */
+    .bento-card--comm {
+      align-items: center;
+    }
+
+    .bento-card--comm .cat-comm {
+      width: 140px;
+      object-fit: contain;
+      transform: translateY(-10px);
+      margin-bottom: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .bento-card--comm:hover .cat-comm {
+      animation: catWiggle 0.55s ease forwards;
+    }
+
+    .bento-card--comm .card-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1B5E20;
+      text-align: center;
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+
+    .bento-card--comm .card-desc {
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      line-height: 1.75;
+      font-weight: 300;
+      flex: 1;
+    }
+
+    .bento-card--comm .card-cta {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #1B5E20;
+      color: white;
+      padding: 13px 0;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 20px;
+      transition: background 0.2s;
+    }
+
+    .bento-card--comm .card-cta:hover {
+      background: #2E7D32;
+    }
+
+    body.dark .bento-card--comm .card-title { color: #81C784; }
+    body.dark .bento-card--comm .card-desc  { color: #aaa; }
+
+    /* =============================================
+       카드6 — 제품 추천 (크림)
+    ============================================= */
+    .bento-card--shop .card-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #43A047;
+      background: #E8F5E9;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .bento-card--shop .card-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1B1B1B;
+      margin-bottom: 20px;
+    }
+
+    .bento-card--shop .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .bento-card--shop .product-chip {
+      background: white;
+      border-radius: 14px;
+      padding: 16px 10px;
+      text-align: center;
+      font-size: 12px;
+      color: #555;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .bento-card--shop .product-chip:hover {
+      background: #eee;
+      transform: translateY(-2px);
+    }
+
+    .bento-card--shop .product-chip .chip-icon {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    body.dark .bento-card--shop .card-title    { color: #f0f0f0; }
+    body.dark .bento-card--shop .product-chip  { background: #2a2a2a; color: #aaa; }
+
+    /* =============================================
+       카드7 — 온유집사 소개 (포인트 그린)
+    ============================================= */
+    .bento-card--about {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 40px;
+      overflow: visible;
+    }
+
+    .bento-card--about .about-main {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .bento-card--about .about-sub {
+      font-size: 14px;
+      opacity: 0.78;
+      font-weight: 300;
+      margin-top: 4px;
+    }
+
+    .bento-card--about .about-emoji {
+      font-size: 52px;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .bento-card--about:hover .about-emoji {
+      animation: catWiggle 0.55s ease forwards;
+    }
+
+    /* =============================================
+       모바일 반응형 (768px 이하)
+    ============================================= */
+    @media (max-width: 768px) {
+      .bento-intro__title {
+        font-size: 34px;
+      }
+
+      .bento-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        gap: 14px;
+      }
+
+      .bento-card--ai,
+      .bento-card--hero,
+      .bento-card--stats,
+      .bento-card--manual,
+      .bento-card--comm,
+      .bento-card--shop,
+      .bento-card--about {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+        min-height: 220px;
+      }
+
+      .bento-card--hero   { min-height: 280px; }
+      .bento-card--comm   { min-height: 340px; }
+      .bento-card--about  { flex-direction: column; gap: 12px; text-align: center; padding: 28px 24px; }
+
+      .bento-card--ai .card-title   { font-size: 30px; }
+      .bento-card--stats .stat-big  { font-size: 56px; }
+    }
+
+    @media (max-width: 480px) {
+      .bento-intro__title { font-size: 28px; }
+      .bento-section      { padding: 36px 16px 52px; }
+    }
+  </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SPJ53Y25V9"></script>
 <script>
@@ -25,7 +530,7 @@
 </head>
 <body>
 
-  <!-- 헤더 -->
+  <!-- 헤더 (기존 유지) -->
   <header class="header">
     <div class="container header__inner">
       <a href="/" class="logo">
@@ -34,7 +539,7 @@
       </a>
       <nav class="nav" id="main-nav">
         <ul class="nav__list">
-          <li><a href="/" class="nav__link"><span class="nav__icon">🏠</span>홈</a></li>
+          <li><a href="/" class="nav__link active"><span class="nav__icon">🏠</span>홈</a></li>
           <li><a href="/pages/analyzer.html" class="nav__link"><span class="nav__icon">🔍</span>품종 분석기</a></li>
           <li><a href="/pages/recommend.html" class="nav__link"><span class="nav__icon">🛍️</span>제품 추천</a></li>
           <li><a href="/pages/rescue.html" class="nav__link"><span class="nav__icon">🐱</span>길냥이 매뉴얼</a></li>
@@ -63,96 +568,133 @@
     </div>
   </header>
 
-  <!-- 히어로 섹션 -->
-  <section class="hero">
-    <div class="container hero__inner">
-      <div class="hero__content">
-        <p class="hero__label">🐱 AI 반려동물 케어 플랫폼</p>
-        <h1 class="hero__title">우리 아이를 위한<br>가장 똑똑한 집사</h1>
-        <p class="hero__desc">
-          AI로 품종 분석부터 맞춤 제품 추천, 길냥이 구조 가이드까지.<br>
-          반려동물과 더 행복한 일상을 함께 만들어요.
+  <!-- ================================================
+       벤토 그리드 메인 섹션
+  ================================================= -->
+  <section class="bento-section">
+
+    <!-- 인트로 타이틀 -->
+    <div class="bento-intro">
+      <span class="bento-intro__label">🐱 AI 반려동물 케어 플랫폼</span>
+      <h1 class="bento-intro__title">
+        우리 아이를 위한<br>
+        <span class="highlight">가장 똑똑한 집사</span>
+      </h1>
+      <p class="bento-intro__desc">AI 품종 분석부터 맞춤 추천, 길냥이 구조까지 — 한 곳에서</p>
+    </div>
+
+    <!-- 벤토 그리드 -->
+    <div class="bento-grid">
+
+      <!-- 카드1: AI 품종 분석기 (그린, 가로 wide) -->
+      <a href="/pages/analyzer.html" class="bento-card bento-card--ai">
+        <span class="card-label">🔍 AI Analyzer · 18 breeds</span>
+        <h2 class="card-title">사진 한 장으로<br>품종 분석</h2>
+        <p class="card-desc">
+          고양이 사진을 올리면 AI가<br>
+          18가지 품종을 즉시 분류해드려요.
         </p>
-        <div class="hero__btns">
-          <a href="/pages/analyzer.html" class="btn btn--primary">AI 분석 시작하기</a>
-          <a href="/pages/rescue.html" class="btn btn--secondary">구조 매뉴얼 보기</a>
+        <span class="card-cta">분석 시작하기 →</span>
+        <img
+          src="./images/cat-black.png"
+          alt="고양이 캐릭터"
+          class="cat-float"
+          onerror="this.style.display='none'"
+        />
+      </a>
+
+      <!-- 카드2: 히어로 캐릭터 (크림, 세로 tall) -->
+      <div class="bento-card bento-card--hero">
+        <p class="hero-brand">길냥이집사</p>
+        <p class="hero-sub">모든 반려동물이 사랑받는 세상</p>
+        <img
+          src="./images/cat-tabby.png"
+          alt="고양이 캐릭터"
+          class="cat-hero"
+          onerror="this.outerHTML='<div style=\'font-size:90px;text-align:center;margin-top:auto\'>🐱</div>'"
+        />
+      </div>
+
+      <!-- 카드3: 통계 (딥 그린, 작은) -->
+      <div class="bento-card bento-card--stats">
+        <span class="stat-big">500+</span>
+        <span class="stat-label">품종 진단 완료</span>
+        <div class="stat-row">
+          <div class="stat-mini">
+            <div class="num">95%</div>
+            <div class="lbl">AI 정확도</div>
+          </div>
+          <div class="stat-mini">
+            <div class="num">380+</div>
+            <div class="lbl">구조 사례</div>
+          </div>
+          <div class="stat-mini">
+            <div class="num">1,200+</div>
+            <div class="lbl">등록 동물</div>
+          </div>
         </div>
       </div>
-      <div class="hero__visual">
-        <div class="hero__mascot">🐾</div>
+
+      <!-- 카드4: 길냥이 매뉴얼 (흰색, 중간) -->
+      <a href="/pages/rescue.html" class="bento-card bento-card--manual">
+        <span class="card-tag">🆘 구조 가이드</span>
+        <h2 class="card-title">갑자기 길냥이를<br>만났나요?</h2>
+        <div class="steps-mini">
+          <div class="step-row"><span class="step-num">1</span>상태 확인하기</div>
+          <div class="step-row"><span class="step-num">2</span>안전하게 접근</div>
+          <div class="step-row"><span class="step-num">3</span>임시 보호소 마련</div>
+          <div class="step-row"><span class="step-num">4</span>수의사 방문</div>
+          <div class="step-row"><span class="step-num">5</span>입양 공고 올리기</div>
+          <div class="step-row"><span class="step-num">6</span>영구 가정 찾기</div>
+        </div>
+      </a>
+
+      <!-- 카드5: 커뮤니티 (연그린, 세로 tall) -->
+      <a href="/pages/community.html" class="bento-card bento-card--comm">
+        <img
+          src="./images/cat-orange.png"
+          alt="고양이 캐릭터"
+          class="cat-comm"
+          onerror="this.outerHTML='<div style=\'font-size:72px;text-align:center;margin-bottom:12px\'>🐈</div>'"
+        />
+        <h2 class="card-title">구조 집사들의<br>이야기</h2>
+        <p class="card-desc">
+          같은 마음을 가진 집사들과<br>
+          경험을 나누고 응원해요.
+        </p>
+        <span class="card-cta">커뮤니티 가기</span>
+      </a>
+
+      <!-- 카드6: 제품 추천 (크림, 가로 wide) -->
+      <a href="/pages/recommend.html" class="bento-card bento-card--shop">
+        <span class="card-tag">🛍️ 맞춤 추천</span>
+        <h2 class="card-title">우리 아이 맞춤<br>제품 추천</h2>
+        <div class="product-grid">
+          <div class="product-chip">
+            <span class="chip-icon">🍖</span>프리미엄 사료
+          </div>
+          <div class="product-chip">
+            <span class="chip-icon">🧸</span>장난감
+          </div>
+          <div class="product-chip">
+            <span class="chip-icon">💊</span>영양제
+          </div>
+        </div>
+      </a>
+
+      <!-- 카드7: 온유집사 소개 (포인트 그린) -->
+      <div class="bento-card bento-card--about">
+        <div>
+          <p class="about-main">이온 + 유 = 온유집사 🐾</p>
+          <p class="about-sub">두 고양이와 함께 만들어가는 길냥이집사</p>
+        </div>
+        <span class="about-emoji">🐱</span>
       </div>
+
     </div>
   </section>
 
-  <!-- 서비스 섹션 -->
-  <section class="services" id="services">
-    <div class="container">
-      <h2 class="section__title">길냥이집사의 서비스</h2>
-      <p class="section__desc">반려동물을 위한 모든 것, 한 곳에서</p>
-      <div class="services__grid">
-
-        <a href="/pages/analyzer.html" class="service-card">
-          <div class="service-card__icon">🔍</div>
-          <h3 class="service-card__title">AI 품종 분석기</h3>
-          <p class="service-card__desc">사진 한 장으로 고양이·강아지 품종을 AI가 정확하게 분석해드려요.</p>
-          <span class="service-card__link">시작하기 →</span>
-        </a>
-
-        <a href="/pages/recommend.html" class="service-card">
-          <div class="service-card__icon">🛍️</div>
-          <h3 class="service-card__title">맞춤 제품 추천</h3>
-          <p class="service-card__desc">우리 아이의 품종, 나이, 건강 상태에 딱 맞는 제품을 추천해드려요.</p>
-          <span class="service-card__link">추천받기 →</span>
-        </a>
-
-        <a href="/pages/rescue.html" class="service-card">
-          <div class="service-card__icon">🆘</div>
-          <h3 class="service-card__title">길냥이 구조 매뉴얼</h3>
-          <p class="service-card__desc">길고양이를 만났나요? 단계별 구조 가이드로 안전하게 도와주세요.</p>
-          <span class="service-card__link">매뉴얼 보기 →</span>
-        </a>
-
-        <a href="/pages/community.html" class="service-card">
-          <div class="service-card__icon">💬</div>
-          <h3 class="service-card__title">구조 집사 커뮤니티</h3>
-          <p class="service-card__desc">같은 마음을 가진 집사들과 이야기 나누고 경험을 공유해요.</p>
-          <span class="service-card__link">참여하기 →</span>
-        </a>
-
-        <a href="/pages/profile.html" class="service-card">
-          <div class="service-card__icon">🐈</div>
-          <h3 class="service-card__title">우리 아이 프로필</h3>
-          <p class="service-card__desc">반려동물의 정보, 건강 기록, 추억 사진을 클라우드에 안전하게 저장해요.</p>
-          <span class="service-card__link">프로필 만들기 →</span>
-        </a>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- 통계 섹션 -->
-  <section class="stats">
-    <div class="container stats__grid">
-      <div class="stat-item">
-        <span class="stat-item__number">1,200+</span>
-        <span class="stat-item__label">등록된 반려동물</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-item__number">380+</span>
-        <span class="stat-item__label">구조 완료 사례</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-item__number">95%</span>
-        <span class="stat-item__label">AI 분석 정확도</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-item__number">500+</span>
-        <span class="stat-item__label">활동 집사</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- 푸터 -->
+  <!-- 푸터 (기존 유지) -->
   <footer class="footer">
     <div class="container footer__inner">
       <div class="footer__brand">
