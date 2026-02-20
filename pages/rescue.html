@@ -12,23 +12,37 @@
   <header class="header">
     <div class="container header__inner">
       <a href="/" class="logo">
-        <span class="logo__icon">🐾</span>
+        <span class="logo__icon">🐱</span>
         <span class="logo__text">길냥이집사</span>
       </a>
       <nav class="nav" id="main-nav">
         <ul class="nav__list">
-          <li><a href="/pages/analyzer.html" class="nav__link">AI 분석기</a></li>
-          <li><a href="/pages/recommend.html" class="nav__link">제품 추천</a></li>
-          <li><a href="/pages/rescue.html" class="nav__link">구조 매뉴얼</a></li>
-          <li><a href="/pages/community.html" class="nav__link">커뮤니티</a></li>
-          <li><a href="/pages/profile.html" class="nav__link">내 아이 프로필</a></li>
+          <li><a href="/" class="nav__link"><span class="nav__icon">🏠</span>홈</a></li>
+          <li><a href="/pages/analyzer.html" class="nav__link"><span class="nav__icon">🔍</span>품종 분석기</a></li>
+          <li><a href="/pages/recommend.html" class="nav__link"><span class="nav__icon">🛍️</span>제품 추천</a></li>
+          <li><a href="/pages/rescue.html" class="nav__link"><span class="nav__icon">🐱</span>길냥이 매뉴얼</a></li>
+          <li><a href="/pages/community.html" class="nav__link"><span class="nav__icon">🤝</span>커뮤니티</a></li>
+          <li><a href="/pages/profile.html" class="nav__link"><span class="nav__icon">🐾</span>우리 아이 프로필</a></li>
         </ul>
       </nav>
       <div class="header__actions">
         <button id="theme-toggle" class="btn-icon" aria-label="테마 변경">🌙</button>
-        <button id="login-btn" class="btn btn--outline">로그인</button>
+        <button id="login-btn" class="nav-login-btn">로그인</button>
+        <div id="user-menu" class="user-menu" style="display:none;">
+          <button class="user-avatar" id="user-avatar-btn" aria-label="내 메뉴">
+            <span id="user-initial">U</span>
+          </button>
+          <div class="user-dropdown" id="user-dropdown">
+            <p class="user-dropdown__name" id="user-dropdown-name"></p>
+            <a href="/pages/profile.html" class="user-dropdown__item">🐾 우리 아이 프로필</a>
+            <div class="user-dropdown__divider"></div>
+            <button class="user-dropdown__item" id="logout-btn">로그아웃</button>
+          </div>
+        </div>
       </div>
-      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">☰</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
 
