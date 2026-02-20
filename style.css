@@ -1,1 +1,33 @@
-/* Add styles here */
+/* 기본 (라이트 모드) */
+body {
+  background-color: #ffffff;
+  color: #111111;
+  font-family: sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+  padding: 40px;
+}
+
+/* 다크 모드 */
+body.dark {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+#theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #333;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+body.dark #theme-toggle {
+  background-color: #f0f0f0;
+  color: #111;
+}
