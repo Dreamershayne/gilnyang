@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>구조 집사 커뮤니티 | 길냥이집사</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">
+        <span class="logo__icon">🐾</span>
+        <span class="logo__text">길냥이집사</span>
+      </a>
+      <nav class="nav" id="main-nav">
+        <ul class="nav__list">
+          <li><a href="/pages/analyzer.html" class="nav__link">AI 분석기</a></li>
+          <li><a href="/pages/recommend.html" class="nav__link">제품 추천</a></li>
+          <li><a href="/pages/rescue.html" class="nav__link">구조 매뉴얼</a></li>
+          <li><a href="/pages/community.html" class="nav__link">커뮤니티</a></li>
+          <li><a href="/pages/profile.html" class="nav__link">내 아이 프로필</a></li>
+        </ul>
+      </nav>
+      <div class="header__actions">
+        <button id="theme-toggle" class="btn-icon" aria-label="테마 변경">🌙</button>
+        <button id="login-btn" class="btn btn--outline">로그인</button>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">☰</button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="page-hero__label">💬 집사들의 공간</p>
+      <h1 class="page-hero__title">구조 집사 커뮤니티</h1>
+      <p class="page-hero__desc">같은 마음을 가진 집사들과 경험을 나눠요.</p>
+    </div>
+  </section>
+
+  <main style="padding: 60px 0;">
+    <div class="container" style="max-width: 800px;">
+
+      <!-- 글쓰기 버튼 -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2 style="font-size:20px; font-weight:700;">전체 게시글</h2>
+        <button class="btn btn--primary" id="write-btn">✏️ 글쓰기</button>
+      </div>
+
+      <!-- 로그인 필요 안내 (비로그인 시 표시) -->
+      <div id="login-notice" class="card text-center" style="display:none; margin-bottom:24px; padding:20px;">
+        <p style="font-size:14px; color:var(--color-text-muted);">글쓰기는 로그인 후 이용 가능합니다.</p>
+        <button class="btn btn--primary mt-16" id="community-login-btn">Google로 로그인</button>
+      </div>
+
+      <!-- 게시글 작성 폼 (로그인 후 글쓰기 클릭 시) -->
+      <div id="post-form" class="card" style="display:none; margin-bottom:32px;">
+        <h3 style="font-size:16px; font-weight:700; margin-bottom:16px;">새 글 작성</h3>
+        <div class="form-group">
+          <input type="text" class="form-control" id="post-title" placeholder="제목을 입력하세요" />
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" id="post-body" rows="5" placeholder="내용을 입력하세요" style="resize:vertical;"></textarea>
+        </div>
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+          <button class="btn btn--outline" id="cancel-post-btn">취소</button>
+          <button class="btn btn--primary" id="submit-post-btn">게시하기</button>
+        </div>
+      </div>
+
+      <!-- 게시글 목록 -->
+      <div id="posts-list" style="display:flex; flex-direction:column; gap:12px;">
+        <!-- JS로 게시글 삽입 -->
+
+        <!-- 샘플 게시글 (실제 데이터 대체 전 표시) -->
+        <div class="post-card">
+          <div class="post-card__meta">
+            <span class="badge badge--green">구조 후기</span>
+            <span>냥집사123</span>
+            <span>2025.12.15</span>
+          </div>
+          <p class="post-card__title">처음 길냥이 구조했어요 🐱</p>
+          <p class="post-card__excerpt">어제 퇴근길에 다리를 절고 있는 고양이를 발견했어요. 구조 매뉴얼 보면서 차근차근 했더니 무사히 병원에 데려갔습니다...</p>
+        </div>
+
+        <div class="post-card">
+          <div class="post-card__meta">
+            <span class="badge badge--blue">질문</span>
+            <span>해피멍멍</span>
+            <span>2025.12.14</span>
+          </div>
+          <p class="post-card__title">아기 고양이 발견했는데 어떻게 해야 하나요?</p>
+          <p class="post-card__excerpt">눈도 안 뜬 아기 고양이 3마리를 발견했는데 어미가 보이지 않아요. 주변에서 기다려야 하나요?</p>
+        </div>
+
+        <div class="post-card">
+          <div class="post-card__meta">
+            <span class="badge badge--orange">나눔</span>
+            <span>집사마음</span>
+            <span>2025.12.13</span>
+          </div>
+          <p class="post-card__title">구조 후 임보 중 → 입양 가정 찾아요</p>
+          <p class="post-card__excerpt">지난달 구조한 3살 수컷 삼색이 코숏입니다. 건강하고 사람을 좋아해요. 서울/경기 지역...</p>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__bottom">
+      <p>© 2026 길냥이집사. All rights reserved. | gilnyang.kr</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/main.js"></script>
+  <script type="module" src="/js/community.js"></script>
+</body>
+</html>

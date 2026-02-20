@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 품종 분석기 | 길냥이집사</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">
+        <span class="logo__icon">🐾</span>
+        <span class="logo__text">길냥이집사</span>
+      </a>
+      <nav class="nav" id="main-nav">
+        <ul class="nav__list">
+          <li><a href="/pages/analyzer.html" class="nav__link">AI 분석기</a></li>
+          <li><a href="/pages/recommend.html" class="nav__link">제품 추천</a></li>
+          <li><a href="/pages/rescue.html" class="nav__link">구조 매뉴얼</a></li>
+          <li><a href="/pages/community.html" class="nav__link">커뮤니티</a></li>
+          <li><a href="/pages/profile.html" class="nav__link">내 아이 프로필</a></li>
+        </ul>
+      </nav>
+      <div class="header__actions">
+        <button id="theme-toggle" class="btn-icon" aria-label="테마 변경">🌙</button>
+        <button id="login-btn" class="btn btn--outline">로그인</button>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">☰</button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="page-hero__label">🔍 AI 기반 품종 분석</p>
+      <h1 class="page-hero__title">AI 품종 분석기</h1>
+      <p class="page-hero__desc">사진 한 장으로 고양이·강아지 품종을 즉시 분석해드려요.</p>
+    </div>
+  </section>
+
+  <main style="padding: 60px 0;">
+    <div class="container" style="max-width: 700px;">
+
+      <!-- 업로드 영역 -->
+      <div class="upload-area" id="upload-area">
+        <div class="upload-area__icon">📸</div>
+        <p class="upload-area__title">사진을 드래그하거나 클릭하여 업로드</p>
+        <p class="upload-area__desc">JPG, PNG, WEBP · 최대 10MB</p>
+        <input type="file" id="file-input" accept="image/*" style="display:none" />
+        <button class="btn btn--primary mt-16" onclick="document.getElementById('file-input').click()">
+          사진 선택하기
+        </button>
+      </div>
+
+      <!-- 미리보기 (업로드 후 표시) -->
+      <div id="preview-area" style="display:none; margin-top:24px; text-align:center;">
+        <img id="preview-img" src="" alt="업로드 이미지" style="max-height:300px; border-radius:12px; margin:0 auto;" />
+        <div class="mt-16">
+          <button class="btn btn--primary" id="analyze-btn">분석 시작하기</button>
+          <button class="btn btn--outline mt-8" onclick="resetUpload()">다시 선택</button>
+        </div>
+      </div>
+
+      <!-- 분석 결과 (분석 후 표시) -->
+      <div id="result-area" style="display:none; margin-top:32px;">
+        <div class="card">
+          <h2 style="font-size:20px; font-weight:700; margin-bottom:16px;">📊 분석 결과</h2>
+          <div id="result-content">
+            <!-- JS로 결과 삽입 -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__bottom">
+      <p>© 2026 길냥이집사. All rights reserved. | gilnyang.kr</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/main.js"></script>
+  <script type="module" src="/js/analyzer.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>맞춤 제품 추천 | 길냥이집사</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">
+        <span class="logo__icon">🐾</span>
+        <span class="logo__text">길냥이집사</span>
+      </a>
+      <nav class="nav" id="main-nav">
+        <ul class="nav__list">
+          <li><a href="/pages/analyzer.html" class="nav__link">AI 분석기</a></li>
+          <li><a href="/pages/recommend.html" class="nav__link">제품 추천</a></li>
+          <li><a href="/pages/rescue.html" class="nav__link">구조 매뉴얼</a></li>
+          <li><a href="/pages/community.html" class="nav__link">커뮤니티</a></li>
+          <li><a href="/pages/profile.html" class="nav__link">내 아이 프로필</a></li>
+        </ul>
+      </nav>
+      <div class="header__actions">
+        <button id="theme-toggle" class="btn-icon" aria-label="테마 변경">🌙</button>
+        <button id="login-btn" class="btn btn--outline">로그인</button>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">☰</button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="page-hero__label">🛍️ 맞춤 추천</p>
+      <h1 class="page-hero__title">우리 아이 맞춤 제품 추천</h1>
+      <p class="page-hero__desc">품종, 나이, 건강 상태를 입력하면 딱 맞는 제품을 추천해드려요.</p>
+    </div>
+  </section>
+
+  <main style="padding: 60px 0;">
+    <div class="container" style="max-width: 720px;">
+
+      <!-- 입력 폼 -->
+      <div class="card" id="input-form">
+        <h2 style="font-size:20px; font-weight:700; margin-bottom:24px;">우리 아이 정보 입력</h2>
+
+        <div class="form-group">
+          <label>반려동물 종류</label>
+          <select class="form-control" id="pet-type">
+            <option value="">선택해주세요</option>
+            <option value="cat">고양이</option>
+            <option value="dog">강아지</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>품종</label>
+          <input type="text" class="form-control" id="pet-breed" placeholder="예: 코리안 숏헤어, 말티즈" />
+        </div>
+
+        <div class="form-group">
+          <label>나이</label>
+          <select class="form-control" id="pet-age">
+            <option value="">선택해주세요</option>
+            <option value="kitten">0~1년 (아기)</option>
+            <option value="young">1~3년 (청소년)</option>
+            <option value="adult">3~8년 (성체)</option>
+            <option value="senior">8년 이상 (노령)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>건강 특이사항 (선택)</label>
+          <input type="text" class="form-control" id="pet-health" placeholder="예: 비만, 관절 약함, 알러지" />
+        </div>
+
+        <button class="btn btn--primary" id="recommend-btn" style="width:100%; margin-top:8px;">
+          맞춤 제품 추천받기
+        </button>
+      </div>
+
+      <!-- 추천 결과 -->
+      <div id="result-area" style="display:none; margin-top:32px;">
+        <h2 style="font-size:20px; font-weight:700; margin-bottom:20px;">🎁 추천 제품 목록</h2>
+        <div id="products-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:20px;">
+          <!-- JS로 제품 카드 삽입 -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__bottom">
+      <p>© 2026 길냥이집사. All rights reserved. | gilnyang.kr</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/main.js"></script>
+  <script type="module" src="/js/recommend.js"></script>
+</body>
+</html>

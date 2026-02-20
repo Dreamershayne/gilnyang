@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>우리 아이 프로필 | 길냥이집사</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">
+        <span class="logo__icon">🐾</span>
+        <span class="logo__text">길냥이집사</span>
+      </a>
+      <nav class="nav" id="main-nav">
+        <ul class="nav__list">
+          <li><a href="/pages/analyzer.html" class="nav__link">AI 분석기</a></li>
+          <li><a href="/pages/recommend.html" class="nav__link">제품 추천</a></li>
+          <li><a href="/pages/rescue.html" class="nav__link">구조 매뉴얼</a></li>
+          <li><a href="/pages/community.html" class="nav__link">커뮤니티</a></li>
+          <li><a href="/pages/profile.html" class="nav__link">내 아이 프로필</a></li>
+        </ul>
+      </nav>
+      <div class="header__actions">
+        <button id="theme-toggle" class="btn-icon" aria-label="테마 변경">🌙</button>
+        <button id="login-btn" class="btn btn--outline">로그인</button>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">☰</button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="page-hero__label">🐈 Firebase 저장</p>
+      <h1 class="page-hero__title">우리 아이 프로필</h1>
+      <p class="page-hero__desc">반려동물의 정보와 건강 기록을 클라우드에 안전하게 보관하세요.</p>
+    </div>
+  </section>
+
+  <main style="padding: 60px 0;">
+    <div class="container">
+
+      <!-- 비로그인 상태 -->
+      <div id="logged-out-view" class="empty-state">
+        <div class="empty-state__icon">🔐</div>
+        <h2 class="empty-state__title">로그인이 필요해요</h2>
+        <p class="empty-state__desc">프로필을 저장하고 관리하려면 로그인해주세요.</p>
+        <button class="btn btn--primary" id="profile-login-btn">Google로 로그인</button>
+      </div>
+
+      <!-- 로그인 상태 -->
+      <div id="logged-in-view" style="display:none;">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
+          <h2 style="font-size:22px; font-weight:700;">내 아이들</h2>
+          <button class="btn btn--primary" id="add-pet-btn">+ 새 프로필 추가</button>
+        </div>
+
+        <!-- 프로필 추가 폼 -->
+        <div id="add-pet-form" class="card" style="display:none; margin-bottom:32px; max-width:600px;">
+          <h3 style="font-size:16px; font-weight:700; margin-bottom:20px;">새 반려동물 등록</h3>
+
+          <div class="form-group">
+            <label>이름</label>
+            <input type="text" class="form-control" id="pet-name" placeholder="우리 아이 이름" />
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label>종류</label>
+              <select class="form-control" id="pet-species">
+                <option value="cat">고양이</option>
+                <option value="dog">강아지</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>성별</label>
+              <select class="form-control" id="pet-gender">
+                <option value="male">수컷</option>
+                <option value="female">암컷</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label>품종</label>
+              <input type="text" class="form-control" id="pet-breed-input" placeholder="예: 코리안 숏헤어" />
+            </div>
+            <div class="form-group">
+              <label>생년월일</label>
+              <input type="date" class="form-control" id="pet-birthday" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>특이사항 (선택)</label>
+            <textarea class="form-control" id="pet-notes" rows="3" placeholder="건강 상태, 특기, 좋아하는 것 등"></textarea>
+          </div>
+
+          <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">
+            <button class="btn btn--outline" id="cancel-pet-btn">취소</button>
+            <button class="btn btn--primary" id="save-pet-btn">저장하기</button>
+          </div>
+        </div>
+
+        <!-- 프로필 카드 그리드 -->
+        <div id="pets-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:24px;">
+          <!-- JS로 Firebase에서 불러와 삽입 -->
+        </div>
+
+        <!-- 빈 상태 -->
+        <div id="no-pets" class="empty-state" style="display:none;">
+          <div class="empty-state__icon">🐾</div>
+          <h2 class="empty-state__title">등록된 반려동물이 없어요</h2>
+          <p class="empty-state__desc">첫 번째 아이의 프로필을 만들어보세요!</p>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__bottom">
+      <p>© 2026 길냥이집사. All rights reserved. | gilnyang.kr</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/main.js"></script>
+  <script type="module" src="/js/profile.js"></script>
+</body>
+</html>

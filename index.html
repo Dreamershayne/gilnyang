@@ -1,15 +1,164 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+  <meta name="description" content="길냥이집사 - 고양이와 강아지를 위한 AI 반려동물 케어 플랫폼" />
+  <title>길냥이집사 | 반려동물 AI 케어 플랫폼</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/css/components.css" />
 </head>
 <body>
-  <button id="theme-toggle">🌙 다크 모드</button>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+
+  <!-- 헤더 -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">
+        <span class="logo__icon">🐾</span>
+        <span class="logo__text">길냥이집사</span>
+      </a>
+      <nav class="nav" id="main-nav">
+        <ul class="nav__list">
+          <li><a href="/pages/analyzer.html" class="nav__link">AI 분석기</a></li>
+          <li><a href="/pages/recommend.html" class="nav__link">제품 추천</a></li>
+          <li><a href="/pages/rescue.html" class="nav__link">구조 매뉴얼</a></li>
+          <li><a href="/pages/community.html" class="nav__link">커뮤니티</a></li>
+          <li><a href="/pages/profile.html" class="nav__link">내 아이 프로필</a></li>
+        </ul>
+      </nav>
+      <div class="header__actions">
+        <button id="theme-toggle" class="btn-icon" aria-label="테마 변경">🌙</button>
+        <button id="login-btn" class="btn btn--outline">로그인</button>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">☰</button>
+    </div>
+  </header>
+
+  <!-- 히어로 섹션 -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__content">
+        <p class="hero__label">🐱 AI 반려동물 케어 플랫폼</p>
+        <h1 class="hero__title">우리 아이를 위한<br>가장 똑똑한 집사</h1>
+        <p class="hero__desc">
+          AI로 품종 분석부터 맞춤 제품 추천, 길냥이 구조 가이드까지.<br>
+          반려동물과 더 행복한 일상을 함께 만들어요.
+        </p>
+        <div class="hero__btns">
+          <a href="/pages/analyzer.html" class="btn btn--primary">AI 분석 시작하기</a>
+          <a href="/pages/rescue.html" class="btn btn--secondary">구조 매뉴얼 보기</a>
+        </div>
+      </div>
+      <div class="hero__visual">
+        <div class="hero__mascot">🐾</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 서비스 섹션 -->
+  <section class="services" id="services">
+    <div class="container">
+      <h2 class="section__title">길냥이집사의 서비스</h2>
+      <p class="section__desc">반려동물을 위한 모든 것, 한 곳에서</p>
+      <div class="services__grid">
+
+        <a href="/pages/analyzer.html" class="service-card">
+          <div class="service-card__icon">🔍</div>
+          <h3 class="service-card__title">AI 품종 분석기</h3>
+          <p class="service-card__desc">사진 한 장으로 고양이·강아지 품종을 AI가 정확하게 분석해드려요.</p>
+          <span class="service-card__link">시작하기 →</span>
+        </a>
+
+        <a href="/pages/recommend.html" class="service-card">
+          <div class="service-card__icon">🛍️</div>
+          <h3 class="service-card__title">맞춤 제품 추천</h3>
+          <p class="service-card__desc">우리 아이의 품종, 나이, 건강 상태에 딱 맞는 제품을 추천해드려요.</p>
+          <span class="service-card__link">추천받기 →</span>
+        </a>
+
+        <a href="/pages/rescue.html" class="service-card">
+          <div class="service-card__icon">🆘</div>
+          <h3 class="service-card__title">길냥이 구조 매뉴얼</h3>
+          <p class="service-card__desc">길고양이를 만났나요? 단계별 구조 가이드로 안전하게 도와주세요.</p>
+          <span class="service-card__link">매뉴얼 보기 →</span>
+        </a>
+
+        <a href="/pages/community.html" class="service-card">
+          <div class="service-card__icon">💬</div>
+          <h3 class="service-card__title">구조 집사 커뮤니티</h3>
+          <p class="service-card__desc">같은 마음을 가진 집사들과 이야기 나누고 경험을 공유해요.</p>
+          <span class="service-card__link">참여하기 →</span>
+        </a>
+
+        <a href="/pages/profile.html" class="service-card">
+          <div class="service-card__icon">🐈</div>
+          <h3 class="service-card__title">우리 아이 프로필</h3>
+          <p class="service-card__desc">반려동물의 정보, 건강 기록, 추억 사진을 클라우드에 안전하게 저장해요.</p>
+          <span class="service-card__link">프로필 만들기 →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 통계 섹션 -->
+  <section class="stats">
+    <div class="container stats__grid">
+      <div class="stat-item">
+        <span class="stat-item__number">1,200+</span>
+        <span class="stat-item__label">등록된 반려동물</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-item__number">380+</span>
+        <span class="stat-item__label">구조 완료 사례</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-item__number">95%</span>
+        <span class="stat-item__label">AI 분석 정확도</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-item__number">500+</span>
+        <span class="stat-item__label">활동 집사</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 푸터 -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <div class="logo">
+          <span class="logo__icon">🐾</span>
+          <span class="logo__text">길냥이집사</span>
+        </div>
+        <p class="footer__desc">모든 반려동물이 사랑받는 세상을 만들어요.</p>
+      </div>
+      <div class="footer__links">
+        <div class="footer__col">
+          <h4>서비스</h4>
+          <ul>
+            <li><a href="/pages/analyzer.html">AI 품종 분석기</a></li>
+            <li><a href="/pages/recommend.html">맞춤 제품 추천</a></li>
+            <li><a href="/pages/rescue.html">구조 매뉴얼</a></li>
+            <li><a href="/pages/community.html">커뮤니티</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>정보</h4>
+          <ul>
+            <li><a href="#">서비스 소개</a></li>
+            <li><a href="#">개인정보처리방침</a></li>
+            <li><a href="#">이용약관</a></li>
+            <li><a href="#">문의하기</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2026 길냥이집사. All rights reserved. | gilnyang.kr</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/main.js"></script>
 </body>
 </html>
