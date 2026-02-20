@@ -11,102 +11,84 @@
   <link rel="stylesheet" href="/css/components.css" />
   <style>
     /* ===================================================
-       글래스모피즘 + 모던 미니멀 홈 레이아웃
+       에디토리얼 베이지 미니멀 — 2025 유럽 트렌드
     =================================================== */
 
     body {
       font-family: 'Pretendard Variable', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     }
 
-    /* 배경 섹션 — 메시 그라디언트 */
+    /* ===== 배경 섹션 ===== */
     .bento-section {
-      background: #f6f8f4;
-      background-image:
-        radial-gradient(ellipse 65% 55% at 10% 20%, rgba(67, 160, 71, 0.14) 0%, transparent 60%),
-        radial-gradient(ellipse 55% 55% at 88% 15%, rgba(27, 94, 32, 0.10) 0%, transparent 60%),
-        radial-gradient(ellipse 70% 45% at 55% 90%, rgba(165, 214, 167, 0.18) 0%, transparent 60%);
-      padding: 68px 24px 84px;
-      position: relative;
-      overflow: hidden;
+      background: #F2F2F0;
+      padding: 72px 24px 88px;
     }
 
     body.dark .bento-section {
-      background: #070d08;
-      background-image:
-        radial-gradient(ellipse 65% 55% at 10% 20%, rgba(67, 160, 71, 0.22) 0%, transparent 60%),
-        radial-gradient(ellipse 55% 55% at 88% 15%, rgba(27, 94, 32, 0.28) 0%, transparent 60%),
-        radial-gradient(ellipse 70% 45% at 55% 90%, rgba(100, 200, 105, 0.12) 0%, transparent 60%);
+      background: #1A1A18;
     }
 
-    /* 인트로 타이틀 */
+    /* ===== 인트로 ===== */
     .bento-intro {
       text-align: center;
-      margin-bottom: 52px;
-      position: relative;
+      margin-bottom: 56px;
     }
 
     .bento-intro__label {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
-      color: #1B5E20;
-      background: rgba(27, 94, 32, 0.08);
-      border: 1px solid rgba(27, 94, 32, 0.18);
-      padding: 6px 18px;
+      color: #5A8F6A;
+      background: rgba(90, 143, 106, 0.10);
+      border: 1px solid rgba(90, 143, 106, 0.22);
+      padding: 6px 16px;
       border-radius: 100px;
-      margin-bottom: 20px;
-      letter-spacing: 0.04em;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      margin-bottom: 24px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .bento-intro__title {
-      font-size: 56px;
+      font-size: 58px;
       font-weight: 900;
-      color: #0d1f0e;
-      line-height: 1.14;
+      color: #1A1A18;
+      line-height: 1.12;
       margin-bottom: 16px;
-      letter-spacing: -0.025em;
+      letter-spacing: -0.03em;
     }
 
     .bento-intro__title .highlight {
-      background: linear-gradient(135deg, #1B5E20 0%, #43A047 50%, #66BB6A 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #3D6B4F;
     }
 
     .bento-intro__desc {
       font-size: 16px;
-      color: #8a9e8b;
+      color: #9A9A96;
       font-weight: 400;
       letter-spacing: -0.01em;
     }
 
-    body.dark .bento-intro__title { color: #edf5ee; }
-    body.dark .bento-intro__label {
-      background: rgba(100, 200, 105, 0.09);
-      border-color: rgba(100, 200, 105, 0.22);
-      color: #81C784;
-    }
-    body.dark .bento-intro__desc { color: #6b896d; }
+    body.dark .bento-intro__title   { color: #F0F0EC; }
+    body.dark .bento-intro__title .highlight { color: #7BBFA0; }
+    body.dark .bento-intro__label   { color: #7BBFA0; background: rgba(123,191,160,0.09); border-color: rgba(123,191,160,0.20); }
+    body.dark .bento-intro__desc    { color: #606060; }
 
     /* ===== 벤토 그리드 ===== */
     .bento-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: 290px 290px 220px 150px;
-      gap: 14px;
+      grid-template-rows: 300px 300px 230px 160px;
+      gap: 16px;
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    /* ===== 카드 공통 — 글래스 베이스 ===== */
+    /* ===== 카드 공통 ===== */
     .bento-card {
-      border-radius: 24px;
-      padding: 32px;
+      border-radius: 28px;
+      padding: 36px;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -114,26 +96,27 @@
       text-decoration: none;
       color: inherit;
       cursor: pointer;
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      box-shadow:
-        0 4px 28px rgba(0, 0, 0, 0.07),
-        0 1px 0 rgba(255, 255, 255, 0.65) inset;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
       transition:
-        transform 0.38s cubic-bezier(.22,.68,0,1.2),
-        box-shadow 0.38s ease;
-      animation: bentoFadeIn 0.6s ease both;
+        transform 0.35s cubic-bezier(.22,.68,0,1.2),
+        box-shadow 0.35s ease;
+      animation: bentoFadeIn 0.65s ease both;
     }
 
     .bento-card:hover {
-      transform: translateY(-8px);
-      box-shadow:
-        0 28px 64px rgba(0, 0, 0, 0.11),
-        0 1px 0 rgba(255, 255, 255, 0.65) inset;
+      transform: translateY(-7px);
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.10);
       z-index: 2;
     }
 
-    /* 스태거 fade-in */
+    body.dark .bento-card {
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.30);
+    }
+    body.dark .bento-card:hover {
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.55);
+    }
+
+    /* 스태거 */
     .bento-card:nth-child(1) { animation-delay: 0.04s; }
     .bento-card:nth-child(2) { animation-delay: 0.10s; }
     .bento-card:nth-child(3) { animation-delay: 0.16s; }
@@ -143,96 +126,58 @@
     .bento-card:nth-child(7) { animation-delay: 0.40s; }
 
     @keyframes bentoFadeIn {
-      from { opacity: 0; transform: translateY(36px) scale(0.96); }
+      from { opacity: 0; transform: translateY(32px) scale(0.97); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     @keyframes catWiggle {
       0%   { transform: rotate(0deg) translateY(-16px); }
-      20%  { transform: rotate(-9deg) translateY(-20px); }
-      40%  { transform: rotate(9deg) translateY(-12px); }
-      60%  { transform: rotate(-5deg) translateY(-18px); }
-      80%  { transform: rotate(5deg) translateY(-10px); }
+      20%  { transform: rotate(-8deg) translateY(-20px); }
+      40%  { transform: rotate(8deg) translateY(-12px); }
+      60%  { transform: rotate(-4deg) translateY(-18px); }
+      80%  { transform: rotate(4deg) translateY(-10px); }
       100% { transform: rotate(0deg) translateY(-16px); }
     }
 
-    /* ===== 그리드 포지션 + 카드별 글래스 색상 ===== */
-    .bento-card--ai {
-      grid-column: 1 / 3; grid-row: 1;
-      background: linear-gradient(145deg, rgba(22, 76, 26, 0.92) 0%, rgba(40, 110, 44, 0.88) 100%);
-      border: 1px solid rgba(105, 200, 110, 0.28);
-      color: white;
-    }
-    .bento-card--hero {
-      grid-column: 3; grid-row: 1 / 3;
-      background: rgba(255, 255, 255, 0.68);
-      border: 1px solid rgba(255, 255, 255, 0.88);
-    }
-    .bento-card--stats {
-      grid-column: 1; grid-row: 2;
-      background: linear-gradient(145deg, rgba(16, 58, 19, 0.94) 0%, rgba(27, 94, 32, 0.90) 100%);
-      border: 1px solid rgba(105, 200, 110, 0.22);
-      color: white;
-    }
-    .bento-card--manual {
-      grid-column: 2; grid-row: 2;
-      background: rgba(255, 255, 255, 0.70);
-      border: 1px solid rgba(255, 255, 255, 0.88);
-    }
-    .bento-card--comm {
-      grid-column: 1; grid-row: 3 / 5;
-      background: rgba(232, 245, 233, 0.68);
-      border: 1px solid rgba(165, 214, 167, 0.45);
-    }
-    .bento-card--shop {
-      grid-column: 2 / 4; grid-row: 3;
-      background: rgba(255, 255, 255, 0.70);
-      border: 1px solid rgba(255, 255, 255, 0.88);
-    }
-    .bento-card--about {
-      grid-column: 2 / 4; grid-row: 4;
-      background: linear-gradient(135deg, rgba(56, 142, 60, 0.90) 0%, rgba(40, 110, 44, 0.87) 100%);
-      border: 1px solid rgba(129, 199, 132, 0.3);
-      color: white;
-    }
+    /* ===== 카드별 색상 — 파스텔 에디토리얼 ===== */
+    .bento-card--ai     { grid-column: 1 / 3; grid-row: 1;     background: #2E4A38; color: white; }
+    .bento-card--hero   { grid-column: 3;     grid-row: 1 / 3; background: #FDFCFA; }
+    .bento-card--stats  { grid-column: 1;     grid-row: 2;     background: #E8E4F4; }
+    .bento-card--manual { grid-column: 2;     grid-row: 2;     background: #FFFFFF; }
+    .bento-card--comm   { grid-column: 1;     grid-row: 3 / 5; background: #E4EEF8; }
+    .bento-card--shop   { grid-column: 2 / 4; grid-row: 3;     background: #F8F4EC; }
+    .bento-card--about  { grid-column: 2 / 4; grid-row: 4;     background: #E2EEEA; }
 
-    /* 다크모드 카드 */
-    body.dark .bento-card {
-      box-shadow:
-        0 4px 28px rgba(0, 0, 0, 0.35),
-        0 1px 0 rgba(255, 255, 255, 0.05) inset;
-    }
-    body.dark .bento-card:hover {
-      box-shadow:
-        0 28px 64px rgba(0, 0, 0, 0.5),
-        0 1px 0 rgba(255, 255, 255, 0.05) inset;
-    }
-    body.dark .bento-card--hero   { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.10); }
-    body.dark .bento-card--manual { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.10); }
-    body.dark .bento-card--comm   { background: rgba(67,160,71,0.08); border-color: rgba(100,200,105,0.18); }
-    body.dark .bento-card--shop   { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.10); }
+    body.dark .bento-card--ai     { background: #1E2E24; }
+    body.dark .bento-card--hero   { background: #222220; }
+    body.dark .bento-card--stats  { background: #22203A; }
+    body.dark .bento-card--manual { background: #252523; }
+    body.dark .bento-card--comm   { background: #1E2430; }
+    body.dark .bento-card--shop   { background: #2A2820; }
+    body.dark .bento-card--about  { background: #1E2A24; }
 
     /* =============================================
-       카드1 — AI 품종 분석기
+       카드1 — AI 품종 분석기 (딥 포레스트)
     ============================================= */
     .bento-card--ai .card-label {
       font-size: 11px;
       font-weight: 600;
-      opacity: 0.65;
+      color: rgba(255,255,255,0.50);
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     .bento-card--ai .card-title {
-      font-size: 42px;
+      font-size: 44px;
       font-weight: 900;
-      line-height: 1.13;
+      line-height: 1.10;
       margin-bottom: 14px;
-      letter-spacing: -0.025em;
+      letter-spacing: -0.03em;
+      color: white;
     }
     .bento-card--ai .card-desc {
       font-size: 14px;
-      opacity: 0.72;
+      color: rgba(255,255,255,0.58);
       font-weight: 400;
       line-height: 1.85;
       max-width: 280px;
@@ -242,10 +187,8 @@
       align-items: center;
       gap: 8px;
       margin-top: auto;
-      background: rgba(255, 255, 255, 0.18);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.32);
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.24);
       color: white;
       padding: 12px 22px;
       border-radius: 100px;
@@ -255,31 +198,32 @@
       transition: background 0.2s, transform 0.2s;
     }
     .bento-card--ai .card-cta:hover {
-      background: rgba(255, 255, 255, 0.28);
+      background: rgba(255,255,255,0.22);
       transform: translateX(4px);
     }
     .bento-card--ai .cat-float {
       position: absolute;
-      right: 20px;
+      right: 24px;
       bottom: -8px;
-      width: 168px;
-      height: 168px;
+      width: 170px;
+      height: 170px;
       object-fit: contain;
       transform: translateY(-16px);
       transition: transform 0.3s ease;
       pointer-events: none;
+      opacity: 0.88;
     }
     .bento-card--ai:hover .cat-float {
       animation: catWiggle 0.55s ease forwards;
     }
 
     /* =============================================
-       카드2 — 히어로 캐릭터
+       카드2 — 히어로 캐릭터 (크림)
     ============================================= */
     .bento-card--hero {
       align-items: center;
       justify-content: flex-end;
-      padding-bottom: 28px;
+      padding-bottom: 32px;
     }
     .bento-card--hero .cat-hero {
       width: 100%;
@@ -293,40 +237,40 @@
       animation: catWiggle 0.55s ease forwards;
     }
     .bento-card--hero .hero-brand {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
-      color: #1B5E20;
+      color: #2E4A38;
       text-align: center;
-      margin-top: 8px;
+      margin-top: 10px;
       letter-spacing: -0.025em;
     }
     .bento-card--hero .hero-sub {
       font-size: 12px;
-      color: #b0b8b1;
+      color: #B0AEA8;
       text-align: center;
       font-weight: 400;
       margin-top: 6px;
     }
-    body.dark .bento-card--hero .hero-brand { color: #81C784; }
-    body.dark .bento-card--hero .hero-sub   { color: #606860; }
+    body.dark .bento-card--hero .hero-brand { color: #7BBFA0; }
+    body.dark .bento-card--hero .hero-sub   { color: #555552; }
 
     /* =============================================
-       카드3 — 통계
+       카드3 — 통계 (라벤더)
     ============================================= */
     .bento-card--stats { justify-content: center; }
     .bento-card--stats .stat-big {
-      font-size: 76px;
+      font-size: 80px;
       font-weight: 900;
       line-height: 1;
       letter-spacing: -4px;
       margin-bottom: 6px;
+      color: #3D3060;
     }
     .bento-card--stats .stat-label {
       font-size: 13px;
-      opacity: 0.62;
+      color: #7A7295;
       font-weight: 400;
-      margin-bottom: 26px;
-      letter-spacing: 0.01em;
+      margin-bottom: 28px;
     }
     .bento-card--stats .stat-row {
       display: flex;
@@ -335,27 +279,32 @@
     .bento-card--stats .stat-mini .num {
       font-size: 22px;
       font-weight: 800;
+      color: #3D3060;
       line-height: 1;
       letter-spacing: -0.02em;
     }
     .bento-card--stats .stat-mini .lbl {
       font-size: 10px;
-      opacity: 0.58;
+      color: #9A94B4;
       margin-top: 4px;
       letter-spacing: 0.04em;
     }
+    body.dark .bento-card--stats .stat-big   { color: #C0B4E8; }
+    body.dark .bento-card--stats .stat-label { color: #7870A0; }
+    body.dark .bento-card--stats .stat-mini .num { color: #C0B4E8; }
+    body.dark .bento-card--stats .stat-mini .lbl { color: #60588A; }
 
     /* =============================================
-       카드4 — 길냥이 매뉴얼
+       카드4 — 길냥이 매뉴얼 (흰색)
     ============================================= */
     .bento-card--manual .card-tag {
       display: inline-flex;
       align-items: center;
       font-size: 11px;
       font-weight: 600;
-      color: #1B5E20;
-      background: rgba(27, 94, 32, 0.09);
-      border: 1px solid rgba(27, 94, 32, 0.18);
+      color: #3D6B4F;
+      background: rgba(61, 107, 79, 0.09);
+      border: 1px solid rgba(61, 107, 79, 0.18);
       padding: 4px 12px;
       border-radius: 100px;
       margin-bottom: 14px;
@@ -363,7 +312,7 @@
     .bento-card--manual .card-title {
       font-size: 20px;
       font-weight: 800;
-      color: #1a2a1b;
+      color: #1A1A18;
       line-height: 1.4;
       margin-bottom: 18px;
       letter-spacing: -0.02em;
@@ -378,12 +327,12 @@
       align-items: center;
       gap: 10px;
       font-size: 12px;
-      color: #6a7a6b;
+      color: #7A7A76;
     }
     .bento-card--manual .step-num {
       width: 20px;
       height: 20px;
-      background: linear-gradient(135deg, #1B5E20, #43A047);
+      background: #2E4A38;
       color: white;
       border-radius: 50%;
       display: flex;
@@ -393,11 +342,13 @@
       font-weight: 700;
       flex-shrink: 0;
     }
-    body.dark .bento-card--manual .card-title { color: #edf5ee; }
-    body.dark .bento-card--manual .step-row   { color: #7a8e7b; }
+    body.dark .bento-card--manual .card-tag   { color: #7BBFA0; background: rgba(123,191,160,0.09); border-color: rgba(123,191,160,0.18); }
+    body.dark .bento-card--manual .card-title { color: #F0F0EC; }
+    body.dark .bento-card--manual .step-row   { color: #6A6A66; }
+    body.dark .bento-card--manual .step-num   { background: #3A6B50; }
 
     /* =============================================
-       카드5 — 커뮤니티
+       카드5 — 커뮤니티 (소프트 블루)
     ============================================= */
     .bento-card--comm { align-items: center; }
     .bento-card--comm .cat-comm {
@@ -413,7 +364,7 @@
     .bento-card--comm .card-title {
       font-size: 22px;
       font-weight: 800;
-      color: #1B5E20;
+      color: #1E3A5A;
       text-align: center;
       line-height: 1.35;
       margin-bottom: 10px;
@@ -421,7 +372,7 @@
     }
     .bento-card--comm .card-desc {
       font-size: 13px;
-      color: #7a8e7b;
+      color: #7A8CA0;
       text-align: center;
       line-height: 1.85;
       font-weight: 400;
@@ -431,7 +382,7 @@
       display: block;
       width: 100%;
       text-align: center;
-      background: linear-gradient(135deg, #1B5E20, #43A047);
+      background: #1E3A5A;
       color: white;
       padding: 13px 0;
       border-radius: 100px;
@@ -441,23 +392,24 @@
       transition: opacity 0.2s, transform 0.2s;
     }
     .bento-card--comm .card-cta:hover {
-      opacity: 0.88;
+      opacity: 0.86;
       transform: translateY(-2px);
     }
-    body.dark .bento-card--comm .card-title { color: #81C784; }
-    body.dark .bento-card--comm .card-desc  { color: #5e7060; }
+    body.dark .bento-card--comm .card-title { color: #90C4E4; }
+    body.dark .bento-card--comm .card-desc  { color: #50606E; }
+    body.dark .bento-card--comm .card-cta   { background: #2A4A6A; }
 
     /* =============================================
-       카드6 — 제품 추천
+       카드6 — 제품 추천 (웜 샌드)
     ============================================= */
     .bento-card--shop .card-tag {
       display: inline-flex;
       align-items: center;
       font-size: 11px;
       font-weight: 600;
-      color: #43A047;
-      background: rgba(67, 160, 71, 0.09);
-      border: 1px solid rgba(67, 160, 71, 0.22);
+      color: #7A6040;
+      background: rgba(122, 96, 64, 0.09);
+      border: 1px solid rgba(122, 96, 64, 0.18);
       padding: 4px 12px;
       border-radius: 100px;
       margin-bottom: 14px;
@@ -465,7 +417,7 @@
     .bento-card--shop .card-title {
       font-size: 20px;
       font-weight: 800;
-      color: #1a2a1b;
+      color: #1A1A18;
       margin-bottom: 20px;
       letter-spacing: -0.02em;
     }
@@ -475,54 +427,51 @@
       gap: 10px;
     }
     .bento-card--shop .product-chip {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.95);
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.70);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 18px;
       padding: 16px 10px;
       text-align: center;
       font-size: 12px;
-      color: #5a6b5b;
+      color: #5A5A56;
       font-weight: 500;
       transition: all 0.22s;
     }
     .bento-card--shop .product-chip:hover {
-      background: rgba(27, 94, 32, 0.06);
-      border-color: rgba(27, 94, 32, 0.18);
+      background: rgba(255,255,255,0.95);
       transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.07);
     }
     .bento-card--shop .product-chip .chip-icon {
       font-size: 28px;
       display: block;
       margin-bottom: 6px;
     }
-    body.dark .bento-card--shop .card-title   { color: #edf5ee; }
-    body.dark .bento-card--shop .product-chip {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.10);
-      color: #8a9e8b;
-    }
+    body.dark .bento-card--shop .card-tag   { color: #C0A070; background: rgba(192,160,112,0.09); border-color: rgba(192,160,112,0.18); }
+    body.dark .bento-card--shop .card-title { color: #F0F0EC; }
+    body.dark .bento-card--shop .product-chip { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); color: #8A8A84; }
+    body.dark .bento-card--shop .product-chip:hover { background: rgba(255,255,255,0.09); }
 
     /* =============================================
-       카드7 — 온유집사 소개
+       카드7 — 온유집사 소개 (뮤트 세이지)
     ============================================= */
     .bento-card--about {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      padding: 28px 40px;
+      padding: 32px 44px;
       overflow: visible;
     }
     .bento-card--about .about-main {
       font-size: 20px;
       font-weight: 800;
+      color: #1A3028;
       line-height: 1.4;
       letter-spacing: -0.02em;
     }
     .bento-card--about .about-sub {
       font-size: 13px;
-      opacity: 0.72;
+      color: #6A8A78;
       font-weight: 400;
       margin-top: 5px;
     }
@@ -534,9 +483,11 @@
     .bento-card--about:hover .about-emoji {
       animation: catWiggle 0.55s ease forwards;
     }
+    body.dark .bento-card--about .about-main { color: #A0C8B0; }
+    body.dark .bento-card--about .about-sub  { color: #4A6A58; }
 
     /* =============================================
-       모바일 반응형
+       모바일
     ============================================= */
     @media (max-width: 768px) {
       .bento-intro__title { font-size: 36px; }
@@ -560,12 +511,12 @@
       .bento-card--comm  { min-height: 340px; }
       .bento-card--about { flex-direction: column; gap: 12px; text-align: center; padding: 28px 24px; }
       .bento-card--ai .card-title  { font-size: 32px; }
-      .bento-card--stats .stat-big { font-size: 60px; }
+      .bento-card--stats .stat-big { font-size: 64px; }
     }
 
     @media (max-width: 480px) {
       .bento-intro__title { font-size: 28px; }
-      .bento-section      { padding: 40px 16px 56px; }
+      .bento-section      { padding: 44px 16px 60px; }
     }
   </style>
 <!-- Google Analytics -->
