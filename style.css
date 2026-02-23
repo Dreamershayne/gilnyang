@@ -1,33 +1,33 @@
 /* ===== CSS 변수 (라이트 모드 기본) ===== */
 :root {
-  --color-primary: #3D6B4F;
-  --color-primary-light: #5A8F6A;
-  --color-primary-dark: #2A4E38;
-  --color-bg: #F2F2F0;
-  --color-bg-alt: #EAEAE7;
-  --color-text: #1A1A18;
-  --color-text-muted: #7A7A76;
+  --color-primary: #2F5BFF;
+  --color-primary-light: #EEF1FF;
+  --color-primary-dark: #1A3FE0;
+  --color-bg: #F7F7F6;
+  --color-bg-alt: #EFEFED;
+  --color-text: #0A0A0A;
+  --color-text-muted: #767672;
   --color-border: rgba(0, 0, 0, 0.08);
   --color-card: #FFFFFF;
-  --shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
-  --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.11);
-  --radius: 24px;
-  --transition: 0.28s ease;
+  --shadow: none;
+  --shadow-hover: none;
+  --radius: 18px;
+  --transition: 0.22s ease;
 }
 
 /* ===== 다크 모드 ===== */
 body.dark {
-  --color-primary: #7BBFA0;
-  --color-primary-light: #9AD4B8;
-  --color-primary-dark: #5AA080;
-  --color-bg: #1A1A18;
-  --color-bg-alt: #222220;
-  --color-text: #F0F0EC;
-  --color-text-muted: #8A8A84;
+  --color-primary: #5B82FF;
+  --color-primary-light: #1A2240;
+  --color-primary-dark: #2F5BFF;
+  --color-bg: #0A0A0A;
+  --color-bg-alt: #111111;
+  --color-text: #F5F5F3;
+  --color-text-muted: #666662;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-card: #252523;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
-  --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --color-card: #141414;
+  --shadow: none;
+  --shadow-hover: none;
 }
 
 /* ===== 리셋 & 기본 ===== */
@@ -133,14 +133,14 @@ img {
   border-radius: 50%;
   transition: background-color var(--transition);
   line-height: 1;
-  color: #1A1A18;
+  color: #0A0A0A;
 }
 
 .btn-icon:hover {
   background-color: rgba(0, 0, 0, 0.06);
 }
 
-body.dark .btn-icon { color: #F0F0EC; }
+body.dark .btn-icon { color: #F5F5F3; }
 body.dark .btn-icon:hover { background-color: rgba(255, 255, 255, 0.08); }
 
 /* ===== 헤더 ===== */
@@ -148,17 +148,15 @@ body.dark .btn-icon:hover { background-color: rgba(255, 255, 255, 0.08); }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(242, 242, 240, 0.88);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  background: rgba(247, 247, 246, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.04);
 }
 
 body.dark .header {
-  background: rgba(26, 26, 24, 0.92);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: none;
+  background: rgba(10, 10, 10, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .header__inner {
@@ -172,15 +170,16 @@ body.dark .header {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 20px;
-  font-weight: 700;
-  color: #1A1A18;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0A0A0A;
   white-space: nowrap;
   margin-right: 28px;
   flex-shrink: 0;
+  letter-spacing: -0.02em;
 }
 
-body.dark .logo { color: #F0F0EC; }
+body.dark .logo { color: #F5F5F3; }
 
 .logo__icon {
   font-size: 24px;
@@ -199,35 +198,35 @@ body.dark .logo { color: #F0F0EC; }
 .nav__link {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 8px 11px;
+  gap: 4px;
+  padding: 7px 12px;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  color: rgba(26, 26, 24, 0.58);
+  color: rgba(10, 10, 10, 0.50);
   transition: all var(--transition);
   white-space: nowrap;
 }
 
 .nav__icon {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
 }
 
 .nav__link:hover {
-  color: #1A1A18;
+  color: #0A0A0A;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
 .nav__link.active {
-  color: #1A1A18;
-  background-color: rgba(61, 107, 79, 0.10);
-  font-weight: 700;
+  color: #0A0A0A;
+  background-color: rgba(47, 91, 255, 0.08);
+  font-weight: 600;
 }
 
-body.dark .nav__link { color: rgba(240, 240, 236, 0.50); }
-body.dark .nav__link:hover { color: #F0F0EC; background-color: rgba(255, 255, 255, 0.07); }
-body.dark .nav__link.active { color: #F0F0EC; background-color: rgba(123, 191, 160, 0.12); }
+body.dark .nav__link { color: rgba(245, 245, 243, 0.40); }
+body.dark .nav__link:hover { color: #F5F5F3; background-color: rgba(255, 255, 255, 0.07); }
+body.dark .nav__link.active { color: #F5F5F3; background-color: rgba(91, 130, 255, 0.12); }
 
 .header__actions {
   display: flex;
@@ -239,30 +238,29 @@ body.dark .nav__link.active { color: #F0F0EC; background-color: rgba(123, 191, 1
 
 /* ===== 로그인 버튼 ===== */
 .nav-login-btn {
-  background: #1A1A18;
-  border: 1.5px solid transparent;
-  color: #F2F2F0;
-  padding: 7px 18px;
+  background: #2F5BFF;
+  border: none;
+  color: #FFFFFF;
+  padding: 8px 20px;
   border-radius: 100px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition);
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
 .nav-login-btn:hover {
-  background: #333330;
+  background: #1A3FE0;
 }
 
 body.dark .nav-login-btn {
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.14);
-  color: #F0F0EC;
+  background: #5B82FF;
 }
 
 body.dark .nav-login-btn:hover {
-  background: rgba(255, 255, 255, 0.17);
+  background: #2F5BFF;
 }
 
 /* ===== 유저 아바타 & 드롭다운 ===== */
@@ -635,7 +633,7 @@ body.dark .user-dropdown__divider {
     top: 64px;
     left: 0;
     right: 0;
-    background: rgba(242, 242, 240, 0.97);
+    background: rgba(247, 247, 246, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid rgba(0, 0, 0, 0.06);
@@ -644,7 +642,7 @@ body.dark .user-dropdown__divider {
   }
 
   body.dark .nav {
-    background: rgba(26, 26, 24, 0.97);
+    background: rgba(10, 10, 10, 0.98);
     border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
 
