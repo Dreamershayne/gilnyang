@@ -1,6 +1,7 @@
 import {
   auth,
   db,
+  storage,
   onAuthStateChanged,
   signInWithPopup,
   GoogleAuthProvider,
@@ -14,6 +15,9 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  ref,
+  uploadBytes,
+  getDownloadURL,
 } from "/js/firebase-config.js";
 
 const loggedOutView = document.getElementById("logged-out-view");
@@ -29,6 +33,22 @@ const formTitle    = addPetForm.querySelector("h3");
 
 let currentUser   = null;
 let editingPetId  = null;  // null: 신규 등록, string: 수정 중
+let selectedPhoto = null;  // 선택된 File 객체
+
+// 사진 선택 미리보기
+document.getElementById("pet-photo-input").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  selectedPhoto = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById("pet-photo-placeholder").style.display = "none";
+    const img = document.getElementById("pet-photo-img");
+    img.src = ev.target.result;
+    img.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+});
 
 // ─── Auth 상태 감지 ───────────────────────────────────────────────────────────
 onAuthStateChanged(auth, (user) => {
@@ -80,6 +100,11 @@ function resetForm() {
   document.getElementById("pet-notes").value       = "";
   document.getElementById("pet-species").value     = "cat";
   document.getElementById("pet-gender").value      = "male";
+  document.getElementById("pet-photo-input").value = "";
+  document.getElementById("pet-photo-img").style.display = "none";
+  document.getElementById("pet-photo-img").src = "";
+  document.getElementById("pet-photo-placeholder").style.display = "block";
+  selectedPhoto = null;
 }
 
 // ─── 저장 (신규 + 수정 공통) ──────────────────────────────────────────────────
@@ -101,12 +126,24 @@ savePetBtn.addEventListener("click", async () => {
   savePetBtn.textContent = "저장 중…";
 
   try {
+    let petId = editingPetId;
+
     if (editingPetId) {
       await updateDoc(doc(db, "users", currentUser.uid, "pets", editingPetId), data);
     } else {
       data.createdAt = serverTimestamp();
-      await addDoc(collection(db, "users", currentUser.uid, "pets"), data);
+      const docRef = await addDoc(collection(db, "users", currentUser.uid, "pets"), data);
+      petId = docRef.id;
     }
+
+    // 사진 업로드
+    if (selectedPhoto && petId) {
+      const photoRef = ref(storage, `pets/${currentUser.uid}/${petId}`);
+      await uploadBytes(photoRef, selectedPhoto);
+      const photoURL = await getDownloadURL(photoRef);
+      await updateDoc(doc(db, "users", currentUser.uid, "pets", petId), { photoURL });
+    }
+
     closeForm();
     loadPets(currentUser.uid);
   } catch (e) {
@@ -145,12 +182,15 @@ function buildCard(id, pet) {
   const genderLabel = pet.gender === "female" ? "암컷" : "수컷";
   const speciesLabel = pet.species === "dog" ? "강아지" : "고양이";
   const age         = pet.birthday ? calcAge(pet.birthday) : null;
+  const photoHTML   = pet.photoURL
+    ? `<img src="${escAttr(pet.photoURL)}" alt="${escAttr(pet.name)}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin:0 auto 2px; display:block;" />`
+    : `<div style="font-size:40px; text-align:center; margin-bottom:2px;">${icon}</div>`;
 
   const card = document.createElement("div");
   card.className = "card";
   card.style.cssText = "display:flex; flex-direction:column; gap:8px;";
   card.innerHTML = `
-    <div style="font-size:40px; text-align:center; margin-bottom:2px;">${icon}</div>
+    ${photoHTML}
     <p style="font-size:17px; font-weight:700; text-align:center; margin:0;">${escHtml(pet.name)}</p>
     <p style="font-size:13px; color:var(--color-text-muted); text-align:center; margin:0; line-height:1.6;">
       ${speciesLabel}${pet.breed ? " · " + escHtml(pet.breed) : ""}
@@ -187,6 +227,18 @@ async function editPet(petId) {
     document.getElementById("pet-breed-input").value = p.breed    || "";
     document.getElementById("pet-birthday").value    = p.birthday || "";
     document.getElementById("pet-notes").value       = p.notes    || "";
+
+    // 기존 사진 미리보기
+    if (p.photoURL) {
+      document.getElementById("pet-photo-placeholder").style.display = "none";
+      const img = document.getElementById("pet-photo-img");
+      img.src = p.photoURL;
+      img.style.display = "block";
+    } else {
+      document.getElementById("pet-photo-placeholder").style.display = "block";
+      document.getElementById("pet-photo-img").style.display = "none";
+    }
+    selectedPhoto = null;
 
     editingPetId           = petId;
     formTitle.textContent  = "프로필 수정";
