@@ -29,12 +29,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "[YOUR_API_KEY]",
-  authDomain: "[YOUR_AUTH_DOMAIN]",
-  projectId: "[YOUR_PROJECT_ID]",
-  storageBucket: "[YOUR_STORAGE_BUCKET]",
-  messagingSenderId: "[YOUR_MESSAGING_SENDER_ID]",
-  appId: "[YOUR_APP_ID]",
+  apiKey: "AIzaSyCrTc8dfSzjqTcsFi-ytUnh_ZsWdhGQlWE",
+  authDomain: "gilnyang-a9516.firebaseapp.com",
+  projectId: "gilnyang-a9516",
+  storageBucket: "gilnyang-a9516.firebasestorage.app",
+  messagingSenderId: "496614893032",
+  appId: "1:496614893032:web:51352e2f69dde60774f05d",
+  measurementId: "G-7VWF446Q9F",
 };
 
 const app = initializeApp(firebaseConfig);
