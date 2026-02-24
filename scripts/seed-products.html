@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Firestore 제품 데이터 시딩</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; background: #f5f5f5; }
+    h1 { font-size: 22px; margin-bottom: 8px; }
+    .card { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    button { background: #2E7D32; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 15px; cursor: pointer; margin-right: 8px; }
+    button:disabled { opacity: .5; cursor: default; }
+    button.secondary { background: #555; }
+    #log { background: #1e1e1e; color: #d4d4d4; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; line-height: 1.7; min-height: 160px; white-space: pre-wrap; }
+    .ok  { color: #4ec94e; }
+    .err { color: #f47174; }
+    .info{ color: #79c0ff; }
+    #status { font-size: 14px; color: #555; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1>🌱 Firestore products 시드 데이터 추가</h1>
+  <p style="color:#666; margin-bottom:20px;">Firebase 관리자 계정으로 로그인 후 아래 버튼을 누르세요.<br>
+    기존 products 컬렉션을 <strong>덮어쓰지 않고</strong> 새 문서로 추가합니다.</p>
+
+  <div class="card">
+    <button id="login-btn">Google로 로그인</button>
+    <button id="logout-btn" class="secondary" style="display:none;">로그아웃</button>
+    <p id="status">로그인이 필요합니다.</p>
+  </div>
+
+  <div class="card">
+    <button id="seed-btn" disabled>📦 테스트 데이터 추가 (총 16개)</button>
+    <button id="clear-btn" class="secondary" disabled style="margin-top:8px;">🗑️ products 컬렉션 전체 삭제 (주의)</button>
+    <div id="log" style="margin-top:16px;">대기 중...</div>
+  </div>
+
+  <!-- Firebase SDK (compat 버전 - 시드 스크립트 전용) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ─── Firebase 초기화 ────────────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey:            "AIzaSyCrTc8dfSzjqTcsFi-ytUnh_ZsWdhGQLWE",
+      authDomain:        "gilnyang-a9516.firebaseapp.com",
+      projectId:         "gilnyang-a9516",
+      storageBucket:     "gilnyang-a9516.firebasestorage.app",
+      messagingSenderId: "496614893032",
+      appId:             "1:496614893032:web:51352e2f69dde60774f05d",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+
+    // ─── 시드 데이터 ────────────────────────────────────────────────────────
+    const PRODUCTS = [
+      // ── 영양 (nutrition) ──────────────────────────────────────────────────
+      {
+        name: "로얄캐닌 키튼 드라이사료 2kg",
+        category: "nutrition",
+        description: "생후 12개월 미만 고양이를 위한 맞춤 영양 사료. 두뇌 발달과 면역력 강화에 최적화된 성분 구성.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-kitten-food",
+        targetSpecies: ["cat"],
+        targetAge: ["kitten"],
+        badge: "온유집사 추천",
+      },
+      {
+        name: "힐스 사이언스 다이어트 어덜트 1~6세 고양이 사료",
+        category: "nutrition",
+        description: "100% 천연 재료로 만든 성체 고양이 전용 균형 영양식. 신장 건강 및 체중 관리 지원.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-adult-cat-food",
+        targetSpecies: ["cat"],
+        targetAge: ["adult"],
+        badge: "",
+      },
+      {
+        name: "로얄캐닌 에이징 12+ 노령묘 사료",
+        category: "nutrition",
+        description: "12세 이상 노령묘를 위한 특수 영양 배합. 소화 흡수율을 높이고 근육량 유지를 도와줘요.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-senior-cat-food",
+        targetSpecies: ["cat"],
+        targetAge: ["senior"],
+        badge: "온유집사 추천",
+      },
+      {
+        name: "퓨리나 프로플랜 강아지 퍼피 사료 3kg",
+        category: "nutrition",
+        description: "DHA·EPA 함유 퍼피 전용 사료. 뇌와 시력 발달을 돕고 면역 시스템을 강화해요.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-puppy-food",
+        targetSpecies: ["dog"],
+        targetAge: ["kitten"],
+        badge: "",
+      },
+      {
+        name: "오리젠 어덜트 강아지 사료",
+        category: "nutrition",
+        description: "신선한 고기 85% 함량의 고단백 성체견 사료. 그레인프리 레시피로 알러지 걱정 없이.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-adult-dog-food",
+        targetSpecies: ["dog"],
+        targetAge: ["adult"],
+        badge: "온유집사 추천",
+      },
+      {
+        name: "힐스 프리스크립션 노령견 j/d 관절 사료",
+        category: "nutrition",
+        description: "오메가3·글루코사민 강화 노령견 전용 사료. 관절 유연성 개선 임상 실험 검증 완료.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-senior-dog-food",
+        targetSpecies: ["dog"],
+        targetAge: ["senior"],
+        badge: "",
+      },
+
+      // ── 그루밍 (grooming) ─────────────────────────────────────────────────
+      {
+        name: "후지와라 고양이 슬리커 브러시",
+        category: "grooming",
+        description: "매일 5분 빗질로 털 날림 90% 감소. 스테인리스 핀이 부드럽게 속털까지 정리해줘요.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-cat-brush",
+        targetSpecies: ["cat"],
+        targetAge: ["kitten", "adult", "senior"],
+        badge: "",
+      },
+      {
+        name: "페티카 강아지 셀프 세정 브러시",
+        category: "grooming",
+        description: "버튼 한 번으로 털이 쏙! 매일 빗질로 피부 마사지 효과까지. 소형·중형견 전용.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-dog-brush",
+        targetSpecies: ["dog"],
+        targetAge: ["kitten", "adult", "senior"],
+        badge: "온유집사 추천",
+      },
+      {
+        name: "베이포지 고양이 저자극 샴푸 300ml",
+        category: "grooming",
+        description: "무향·무색소 저자극 포뮬러. 예민한 피부 고양이에게도 안심하고 사용할 수 있어요.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-cat-shampoo",
+        targetSpecies: ["cat"],
+        targetAge: ["adult", "senior"],
+        badge: "",
+      },
+
+      // ── 건강 (health) ─────────────────────────────────────────────────────
+      {
+        name: "뉴트리베트 고양이 관절 영양제 60정",
+        category: "health",
+        description: "글루코사민·콘드로이틴·MSM 복합 처방. 7세 이상 노령묘의 관절 유연성과 이동성을 지원.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-cat-joint",
+        targetSpecies: ["cat"],
+        targetAge: ["senior"],
+        badge: "온유집사 추천",
+      },
+      {
+        name: "닥터독 강아지 관절 젤리 간식 30개입",
+        category: "health",
+        description: "맛있게 먹는 관절 케어 간식. 글루코사민 500mg + 히알루론산 함유. 소·중·대형견 모두 OK.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-dog-joint",
+        targetSpecies: ["dog"],
+        targetAge: ["adult", "senior"],
+        badge: "",
+      },
+      {
+        name: "바이오가이아 반려동물 유산균 프로바이오틱스",
+        category: "health",
+        description: "고양이·강아지 공용 장 건강 유산균. 소화 불량·무른변 개선에 도움. 무분말 캡슐형.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-probiotics",
+        targetSpecies: ["cat", "dog"],
+        targetAge: ["kitten", "adult", "senior"],
+        badge: "온유집사 추천",
+      },
+      {
+        name: "동물병원 전용 고양이 헤어볼 제거제 100g",
+        category: "health",
+        description: "맥아·치커리 성분으로 헤어볼을 자연스럽게 배출. 연어 맛으로 고양이가 직접 핥아먹어요.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-hairball",
+        targetSpecies: ["cat"],
+        targetAge: ["adult", "senior"],
+        badge: "",
+      },
+
+      // ── 놀이 (play) ───────────────────────────────────────────────────────
+      {
+        name: "스크래쳐 캣타워 3단 해먹형",
+        category: "play",
+        description: "사이잘 로프 스크래쳐 + 해먹 + 터널 일체형. 운동·수면·스트레스 해소를 동시에 해결.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-cat-tower",
+        targetSpecies: ["cat"],
+        targetAge: ["kitten", "adult"],
+        badge: "온유집사 추천",
+      },
+      {
+        name: "페더앤필 고양이 낚싯대 장난감 세트",
+        category: "play",
+        description: "교체형 끝부속 5종 포함. 매일 10분 사냥 놀이로 비만 예방과 스트레스 해소 효과.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-cat-toy",
+        targetSpecies: ["cat"],
+        targetAge: ["kitten", "adult"],
+        badge: "",
+      },
+      {
+        name: "콩 퍼즐 강아지 노즈워크 장난감",
+        category: "play",
+        description: "숨겨진 간식을 찾는 노즈워크 매트. 10~30분 집중력 훈련으로 분리불안 완화에 탁월.",
+        imageUrl: "",
+        link: "https://link.coupang.com/a/placeholder-dog-toy",
+        targetSpecies: ["dog"],
+        targetAge: ["kitten", "adult", "senior"],
+        badge: "온유집사 추천",
+      },
+    ];
+
+    // ─── UI 로직 ────────────────────────────────────────────────────────────
+    const loginBtn  = document.getElementById("login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const seedBtn   = document.getElementById("seed-btn");
+    const clearBtn  = document.getElementById("clear-btn");
+    const statusEl  = document.getElementById("status");
+    const logEl     = document.getElementById("log");
+
+    function log(msg, type = "") {
+      const span = document.createElement("span");
+      span.className = type;
+      span.textContent = msg + "\n";
+      logEl.appendChild(span);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        statusEl.innerHTML = `✅ 로그인됨: <strong>${user.email}</strong>`;
+        loginBtn.style.display  = "none";
+        logoutBtn.style.display = "inline-block";
+        seedBtn.disabled  = false;
+        clearBtn.disabled = false;
+      } else {
+        statusEl.textContent = "로그인이 필요합니다.";
+        loginBtn.style.display  = "inline-block";
+        logoutBtn.style.display = "none";
+        seedBtn.disabled  = true;
+        clearBtn.disabled = true;
+      }
+    });
+
+    loginBtn.addEventListener("click", () => {
+      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => {
+        log("로그인 오류: " + e.message, "err");
+      });
+    });
+
+    logoutBtn.addEventListener("click", () => auth.signOut());
+
+    // ── 시드 추가 ──────────────────────────────────────────────────────────
+    seedBtn.addEventListener("click", async () => {
+      seedBtn.disabled = true;
+      logEl.textContent = "";
+      log("▶ products 컬렉션에 데이터 추가 시작...\n", "info");
+
+      let ok = 0, fail = 0;
+      const col = db.collection("products");
+
+      for (const product of PRODUCTS) {
+        try {
+          const ref = await col.add({
+            ...product,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+          log(`✔ [${product.category}] ${product.name} → ${ref.id}`, "ok");
+          ok++;
+        } catch (e) {
+          log(`✘ ${product.name}: ${e.message}`, "err");
+          fail++;
+        }
+      }
+
+      log(`\n완료: 성공 ${ok}개, 실패 ${fail}개`, fail ? "err" : "ok");
+      seedBtn.disabled = false;
+    });
+
+    // ── 전체 삭제 (주의) ───────────────────────────────────────────────────
+    clearBtn.addEventListener("click", async () => {
+      if (!confirm("products 컬렉션의 모든 문서를 삭제합니다. 계속할까요?")) return;
+      clearBtn.disabled = true;
+      logEl.textContent = "";
+      log("▶ 전체 삭제 시작...\n", "info");
+
+      try {
+        const snap = await db.collection("products").get();
+        const batch = db.batch();
+        snap.docs.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+        log(`✔ ${snap.size}개 문서 삭제 완료`, "ok");
+      } catch (e) {
+        log("삭제 오류: " + e.message, "err");
+      }
+      clearBtn.disabled = false;
+    });
+  </script>
+</body>
+</html>

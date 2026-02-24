@@ -1,0 +1,20 @@
+# JS / CSS / HTML — 1시간 캐시
+/*.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/*.css
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/*.html
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# 이미지 — 1주일 캐시
+/assets/*
+  Cache-Control: public, max-age=604800, immutable
+
+# 전체 페이지 보안 헤더
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

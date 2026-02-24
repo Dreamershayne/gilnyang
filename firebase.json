@@ -1,24 +1,6 @@
 {
-  "hosting": {
-    "public": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**",
-      "README.md",
-      "GEMINI.md"
-    ],
-    "cleanUrls": true,
-    "trailingSlash": false,
-    "headers": [
-      {
-        "source": "**/*.@(js|mjs|css|html)",
-        "headers": [{ "key": "Cache-Control", "value": "max-age=3600" }]
-      },
-      {
-        "source": "**/*.@(png|jpg|jpeg|gif|webp|svg|ico)",
-        "headers": [{ "key": "Cache-Control", "value": "max-age=604800" }]
-      }
-    ]
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }

@@ -1,0 +1,5 @@
+# scripts 폴더 외부 접근 차단
+/scripts/*  /  301
+
+# 404 → 홈으로
+/*  /index.html  404
