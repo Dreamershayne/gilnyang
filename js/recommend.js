@@ -17,6 +17,8 @@ const petBreedEl   = document.getElementById("pet-breed");
 const petAgeEl     = document.getElementById("pet-age");
 const petHealthEl  = document.getElementById("pet-health");
 
+const NAVER_WORKER_URL = "https://naver-shopping-proxy.chloepark813.workers.dev";
+
 // ─── 카테고리 메타 ──────────────────────────────────────────────────────────
 const CATEGORIES = {
   nutrition: { label: "영양",   icon: "🍖", badgeClass: "badge--green"  },
@@ -116,7 +118,8 @@ if (recommendBtn) {
 
     try {
       const firestoreAge = formAgeToFirestore(petAge);
-      const products = await fetchProducts(petType, firestoreAge);
+      const petHealth = petHealthEl.value.trim();
+      const products = await fetchProducts(petType, firestoreAge, petHealth);
       renderCategoryCards(products);
     } catch (e) {
       console.error("제품 로드 오류:", e);
@@ -135,14 +138,40 @@ function formAgeToFirestore(formAge) {
 }
 
 // Firestore products 컬렉션 → 클라이언트 필터링
-async function fetchProducts(species, age) {
+async function fetchProducts(species, age, healthInput = "") {
   const snap = await getDocs(collection(db, "products"));
-  return snap.docs
-    .map(d => ({ id: d.id, ...d.data() }))
-    .filter(p =>
-      Array.isArray(p.targetSpecies) && p.targetSpecies.includes(species) &&
-      Array.isArray(p.targetAge)     && p.targetAge.includes(age)
+  const all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  // 건강 키워드 추출 (쉼표/공백 구분)
+  const healthKeywords = healthInput
+    ? healthInput.split(/[,，\s]+/).map(k => k.trim()).filter(Boolean)
+    : [];
+
+  // species + age 필터
+  let filtered = all.filter(p =>
+    Array.isArray(p.targetSpecies) && p.targetSpecies.includes(species) &&
+    Array.isArray(p.targetAge) && p.targetAge.includes(age)
+  );
+  if (!filtered.length) {
+    filtered = all.filter(p =>
+      Array.isArray(p.targetSpecies) && p.targetSpecies.includes(species)
     );
+  }
+
+  // 건강 키워드 있으면 매칭 제품 상단으로 정렬
+  if (healthKeywords.length > 0) {
+    filtered.sort((a, b) => {
+      const aMatch = (a.healthTags || []).some(tag =>
+        healthKeywords.some(k => tag.includes(k) || k.includes(tag))
+      );
+      const bMatch = (b.healthTags || []).some(tag =>
+        healthKeywords.some(k => tag.includes(k) || k.includes(tag))
+      );
+      return bMatch - aMatch;
+    });
+  }
+
+  return filtered;
 }
 
 // ─── 카테고리 카드 렌더링 ──────────────────────────────────────────────────
@@ -190,6 +219,7 @@ function renderCategoryCards(products) {
         <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;">
           ${grouped[cat].map(p => renderProductCard(p, info)).join("")}
         </div>
+        <div id="naver-products-${cat}"></div>
       </div>
     `).join("")}
   `;
@@ -215,6 +245,28 @@ function renderCategoryCards(products) {
 
       if (!isOpen) {
         list.style.display = "block";
+        // 네이버 실제 제품 로드
+        const catInfo = CATEGORIES[cat];
+        const petType = petTypeEl.value === "cat" ? "고양이" : "강아지";
+        const queryMap = {
+          nutrition: `${petType} 사료`,
+          grooming:  `${petType} 브러쉬 그루밍`,
+          health:    `${petType} 영양제 건강`,
+          play:      `${petType} 장난감`,
+        };
+        const naverSection = document.getElementById(`naver-products-${cat}`);
+        if (naverSection && !naverSection.dataset.loaded) {
+          naverSection.innerHTML = "<p style='color:var(--color-text-muted);'>🔍 실제 제품 검색 중...</p>";
+          fetchNaverProducts(queryMap[cat]).then(items => {
+            naverSection.innerHTML = `
+              <p style="font-size:14px; font-weight:700; margin-top:24px; margin-bottom:8px;">
+                🛍️ 네이버 쇼핑 인기 제품 TOP 4
+              </p>
+              ${renderNaverProductCards(items)}
+            `;
+            naverSection.dataset.loaded = "true";
+          });
+        }
         card.style.boxShadow = "0 0 0 2px var(--color-primary, #2E7D32)";
         const arrow = card.querySelector(".cat-arrow");
         if (arrow) arrow.textContent = arrow.textContent.replace("▾", "▴");
@@ -253,5 +305,47 @@ function renderProductCard(p, catInfo) {
         <span style="font-size:13px; font-weight:600; color:var(--color-primary,#2E7D32);">쿠팡에서 보기 →</span>
       </div>
     </a>
+  `;
+}
+
+// ─── 네이버 쇼핑 연동 ────────────────────────────────────────────────────────
+async function fetchNaverProducts(query) {
+  try {
+    const res = await fetch(`${NAVER_WORKER_URL}/?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    return data.items || [];
+  } catch (e) {
+    console.error("네이버 API 오류:", e);
+    return [];
+  }
+}
+
+function renderNaverProductCards(items) {
+  if (!items.length) return "<p style='color:var(--color-text-muted);'>검색 결과가 없어요.</p>";
+  return `
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:16px;">
+      ${items.map(item => {
+        const name = item.title.replace(/<[^>]+>/g, "");
+        const price = parseInt(item.lprice).toLocaleString();
+        return `
+          <a href="${item.link}" target="_blank" rel="noopener noreferrer"
+             style="text-decoration:none; color:inherit;">
+            <div class="card" style="display:flex; flex-direction:column; gap:10px; height:100%;
+                 transition:transform 0.15s;"
+                 onmouseover="this.style.transform='translateY(-2px)'"
+                 onmouseout="this.style.transform=''">
+              <img src="${item.image}" alt="${name}"
+                   style="width:100%; height:140px; object-fit:contain; border-radius:8px;
+                          background:var(--color-bg-secondary,#f5f5f5);">
+              <p style="font-size:14px; font-weight:700; line-height:1.4;">${name}</p>
+              <p style="font-size:15px; font-weight:800; color:var(--color-primary,#2E7D32);">
+                ${price}원~
+              </p>
+              <span style="font-size:13px; color:var(--color-text-muted);">네이버 쇼핑에서 보기 →</span>
+            </div>
+          </a>
+        `;
+      }).join("")}
+    </div>
   `;
 }
