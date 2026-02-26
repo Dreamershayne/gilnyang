@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제품 관리 — 길냥이집사 Admin</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <style>
+    body { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
+
+    /* ── 상단 툴바 ── */
+    .toolbar {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .toolbar select, .toolbar input[type="text"] {
+      padding: 8px 12px; border-radius: 8px; font-size: 14px;
+      border: 1px solid var(--color-border, #e0e0e0);
+      background: var(--color-bg, #fff); color: var(--color-text, #111);
+    }
+    .toolbar input[type="text"] { flex: 1; min-width: 160px; }
+
+    /* ── 제품 테이블 ── */
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: var(--color-bg-secondary, #f5f5f5);
+         padding: 10px 12px; text-align: left; white-space: nowrap; }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--color-border, #e0e0e0);
+         vertical-align: top; }
+    tr:hover td { background: var(--color-bg-secondary, #f5f5f5); }
+    .badge-cat { font-size: 11px; padding: 2px 8px; border-radius: 20px;
+                 white-space: nowrap; }
+
+    /* ── 모달 ── */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--color-bg, #fff); border-radius: 16px;
+      padding: 28px; width: 100%; max-width: 560px;
+      max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,.2);
+    }
+    .modal h3 { margin-bottom: 20px; font-size: 17px; }
+    .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-row label { font-size: 12px; font-weight: 600;
+                      color: var(--color-text-muted, #888); }
+    .form-row input, .form-row select, .form-row textarea {
+      padding: 9px 12px; border-radius: 8px; font-size: 14px;
+      border: 1px solid var(--color-border, #e0e0e0);
+      background: var(--color-bg, #fff); color: var(--color-text, #111);
+      width: 100%; box-sizing: border-box;
+    }
+    .form-row textarea { resize: vertical; min-height: 72px; }
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .checkbox-group label { font-size: 13px; font-weight: 400;
+                            display: flex; align-items: center; gap: 4px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+    /* ── 유틸 ── */
+    .empty { text-align: center; padding: 48px 0;
+             color: var(--color-text-muted, #888); font-size: 14px; }
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #333; color: #fff; padding: 10px 20px; border-radius: 20px;
+      font-size: 13px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 200;
+    }
+    #toast.show { opacity: 1; }
+  </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SPJ53Y25V9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SPJ53Y25V9');
+  </script>
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "vkc46c6abo");
+  </script>
+</head>
+<body>
+
+  <!-- 로그인 전 -->
+  <div id="auth-wall" style="text-align:center; padding:80px 0;">
+    <p style="font-size:18px; font-weight:700; margin-bottom:16px;">🔒 관리자 로그인 필요</p>
+    <button class="btn btn--primary" id="login-btn">🔑 Google 로그인</button>
+  </div>
+
+  <!-- 로그인 후 본문 -->
+  <div id="main-app" style="display:none;">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+      <div>
+        <h2 style="margin:0;">📦 제품 관리</h2>
+        <p id="user-info" style="font-size:12px; color:var(--color-text-muted); margin:4px 0 0;"></p>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn--primary" id="add-btn">+ 제품 추가</button>
+        <button class="btn" id="logout-btn">로그아웃</button>
+      </div>
+    </div>
+
+    <!-- 툴바 -->
+    <div class="toolbar">
+      <select id="filter-category">
+        <option value="">전체 카테고리</option>
+        <option value="nutrition">🍖 영양</option>
+        <option value="grooming">🪮 그루밍</option>
+        <option value="health">💊 건강</option>
+        <option value="play">🎾 놀이</option>
+        <option value="living">🏡 리빙</option>
+        <option value="travel">🚗 이동/외출</option>
+        <option value="hygiene">🧴 위생</option>
+        <option value="rescue">🆘 구조/입양</option>
+      </select>
+      <select id="filter-species">
+        <option value="">전체 종류</option>
+        <option value="cat">고양이</option>
+        <option value="dog">강아지</option>
+      </select>
+      <input type="text" id="filter-search" placeholder="제품명 검색…">
+      <span id="count-label" style="font-size:13px; color:var(--color-text-muted); white-space:nowrap;"></span>
+    </div>
+
+    <!-- 테이블 -->
+    <div class="tbl-wrap card" style="padding:0;">
+      <table>
+        <thead>
+          <tr>
+            <th>카테고리</th>
+            <th>제품명</th>
+            <th>대상</th>
+            <th>연령</th>
+            <th>뱃지</th>
+            <th>링크</th>
+            <th style="width:100px;">관리</th>
+          </tr>
+        </thead>
+        <tbody id="product-tbody"></tbody>
+      </table>
+      <div class="empty" id="empty-msg" style="display:none;">조건에 맞는 제품이 없어요.</div>
+    </div>
+  </div>
+
+  <!-- 추가/수정 모달 -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <h3 id="modal-title">제품 추가</h3>
+      <form id="product-form" autocomplete="off">
+        <input type="hidden" id="f-id">
+
+        <div class="form-row">
+          <label>카테고리 *</label>
+          <select id="f-category" required>
+            <option value="">선택</option>
+            <option value="nutrition">🍖 영양</option>
+            <option value="grooming">🪮 그루밍</option>
+            <option value="health">💊 건강</option>
+            <option value="play">🎾 놀이</option>
+            <option value="living">🏡 리빙</option>
+            <option value="travel">🚗 이동/외출</option>
+            <option value="hygiene">🧴 위생</option>
+            <option value="rescue">🆘 구조/입양</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>제품명 *</label>
+          <input type="text" id="f-name" required placeholder="예: 순환식 자동급수기">
+        </div>
+
+        <div class="form-row">
+          <label>설명</label>
+          <textarea id="f-description" placeholder="제품 한 줄 설명"></textarea>
+        </div>
+
+        <div class="form-row">
+          <label>대상 종류 *</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" id="f-cat" value="cat"> 고양이</label>
+            <label><input type="checkbox" id="f-dog" value="dog"> 강아지</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>대상 연령 *</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" id="f-kitten" value="kitten"> 키튼</label>
+            <label><input type="checkbox" id="f-adult"  value="adult">  성묘/성견</label>
+            <label><input type="checkbox" id="f-senior" value="senior"> 시니어</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>뱃지</label>
+          <select id="f-badge">
+            <option value="">없음</option>
+            <option value="BEST">BEST</option>
+            <option value="NEW">NEW</option>
+            <option value="추천">추천</option>
+            <option value="인기">인기</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>건강 태그 (쉼표 구분)</label>
+          <input type="text" id="f-healthTags" placeholder="예: 신장, 수분섭취, 요로">
+        </div>
+
+        <div class="form-row">
+          <label>이미지 URL</label>
+          <input type="url" id="f-imageUrl" placeholder="https://…">
+        </div>
+
+        <div class="form-row">
+          <label>제품 링크 *</label>
+          <input type="url" id="f-link" required placeholder="https://link.coupang.com/…">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn" id="modal-cancel">취소</button>
+          <button type="submit" class="btn btn--primary" id="modal-submit">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 토스트 -->
+  <div id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import {
+      getAuth, signInWithPopup, signOut,
+      onAuthStateChanged, GoogleAuthProvider,
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import {
+      getFirestore, collection, getDocs, addDoc,
+      doc, updateDoc, deleteDoc, serverTimestamp,
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey:            "AIzaSyCrTc8dfSzjqTcsFi-ytUnh_ZsWdhGQlWE",
+      authDomain:        "gilnyang-a9516.firebaseapp.com",
+      projectId:         "gilnyang-a9516",
+      storageBucket:     "gilnyang-a9516.firebasestorage.app",
+      messagingSenderId: "496614893032",
+      appId:             "1:496614893032:web:51352e2f69dde60774f05d",
+    };
+
+    const app      = initializeApp(firebaseConfig);
+    const auth     = getAuth(app);
+    const db       = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // ─── 상태 ───────────────────────────────────────────────────────────────
+    let allProducts = [];   // Firestore 전체 목록 (캐시)
+
+    // ─── 인증 ───────────────────────────────────────────────────────────────
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        document.getElementById("auth-wall").style.display = "none";
+        document.getElementById("main-app").style.display  = "block";
+        document.getElementById("user-info").textContent   = user.email;
+        await loadProducts();
+      } else {
+        document.getElementById("auth-wall").style.display = "block";
+        document.getElementById("main-app").style.display  = "none";
+      }
+    });
+
+    document.getElementById("login-btn").addEventListener("click", () =>
+      signInWithPopup(auth, provider).catch(e => alert("로그인 실패: " + e.message))
+    );
+    document.getElementById("logout-btn").addEventListener("click", () => signOut(auth));
+
+    // ─── 제품 로드 ──────────────────────────────────────────────────────────
+    async function loadProducts() {
+      const snap = await getDocs(collection(db, "products"));
+      allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderTable();
+    }
+
+    // ─── 필터 ───────────────────────────────────────────────────────────────
+    ["filter-category", "filter-species", "filter-search"].forEach(id =>
+      document.getElementById(id).addEventListener("input", renderTable)
+    );
+
+    function renderTable() {
+      const cat     = document.getElementById("filter-category").value;
+      const species = document.getElementById("filter-species").value;
+      const search  = document.getElementById("filter-search").value.trim().toLowerCase();
+
+      let list = allProducts.filter(p => {
+        if (cat     && p.category !== cat) return false;
+        if (species && !(p.targetSpecies || []).includes(species)) return false;
+        if (search  && !p.name?.toLowerCase().includes(search)) return false;
+        return true;
+      });
+
+      const tbody = document.getElementById("product-tbody");
+      const empty = document.getElementById("empty-msg");
+      document.getElementById("count-label").textContent = `총 ${list.length}개`;
+
+      if (!list.length) {
+        tbody.innerHTML = "";
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      const CAT_LABEL = {
+        nutrition:"영양", grooming:"그루밍", health:"건강", play:"놀이",
+        living:"리빙", travel:"이동/외출", hygiene:"위생", rescue:"구조/입양",
+      };
+      const CAT_COLOR = {
+        nutrition:"badge--green", grooming:"badge--blue", health:"badge--red",
+        play:"badge--yellow", living:"badge--green", travel:"badge--blue",
+        hygiene:"badge--red", rescue:"badge--yellow",
+      };
+      const AGE_KR = { kitten:"키튼", adult:"성묘/견", senior:"시니어" };
+
+      tbody.innerHTML = list.map(p => {
+        const species = (p.targetSpecies || []).map(s => s === "cat" ? "🐱" : "🐶").join(" ");
+        const ages    = (p.targetAge || []).map(a => AGE_KR[a] || a).join(", ");
+        const linkTxt = p.link ? `<a href="${p.link}" target="_blank" rel="noopener"
+                                     style="font-size:12px; color:var(--color-primary);">링크↗</a>` : "-";
+        return `
+          <tr>
+            <td><span class="badge ${CAT_COLOR[p.category] || ''} badge-cat">
+              ${CAT_LABEL[p.category] || p.category}
+            </span></td>
+            <td>
+              <p style="font-weight:600; margin:0 0 2px;">${p.name || "-"}</p>
+              <p style="font-size:12px; color:var(--color-text-muted); margin:0; line-height:1.5;">
+                ${p.description || ""}
+              </p>
+            </td>
+            <td>${species || "-"}</td>
+            <td style="font-size:12px;">${ages || "-"}</td>
+            <td>${p.badge ? `<span class="badge badge--green" style="font-size:11px;">${p.badge}</span>` : "-"}</td>
+            <td>${linkTxt}</td>
+            <td>
+              <button class="btn" style="font-size:12px; padding:4px 10px; margin-bottom:4px;"
+                      onclick="openEdit('${p.id}')">수정</button>
+              <button class="btn" style="font-size:12px; padding:4px 10px; color:#c62828; border-color:#c62828;"
+                      onclick="confirmDelete('${p.id}', '${p.name?.replace(/'/g,"\\'")}')">삭제</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // ─── 모달 열기/닫기 ─────────────────────────────────────────────────────
+    const modal  = document.getElementById("modal");
+    const form   = document.getElementById("product-form");
+
+    function openModal(title) {
+      document.getElementById("modal-title").textContent = title;
+      modal.classList.add("open");
+    }
+    function closeModal() {
+      modal.classList.remove("open");
+      form.reset();
+      document.getElementById("f-id").value = "";
+    }
+
+    document.getElementById("modal-cancel").addEventListener("click", closeModal);
+    modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+
+    // ─── 추가 ───────────────────────────────────────────────────────────────
+    document.getElementById("add-btn").addEventListener("click", () => {
+      openModal("제품 추가");
+    });
+
+    // ─── 수정 ───────────────────────────────────────────────────────────────
+    window.openEdit = (id) => {
+      const p = allProducts.find(x => x.id === id);
+      if (!p) return;
+
+      document.getElementById("f-id").value          = id;
+      document.getElementById("f-category").value    = p.category || "";
+      document.getElementById("f-name").value         = p.name || "";
+      document.getElementById("f-description").value = p.description || "";
+      document.getElementById("f-badge").value        = p.badge || "";
+      document.getElementById("f-imageUrl").value     = p.imageUrl || "";
+      document.getElementById("f-link").value         = p.link || "";
+      document.getElementById("f-healthTags").value   = (p.healthTags || []).join(", ");
+
+      document.getElementById("f-cat").checked    = (p.targetSpecies || []).includes("cat");
+      document.getElementById("f-dog").checked    = (p.targetSpecies || []).includes("dog");
+      document.getElementById("f-kitten").checked = (p.targetAge || []).includes("kitten");
+      document.getElementById("f-adult").checked  = (p.targetAge || []).includes("adult");
+      document.getElementById("f-senior").checked = (p.targetAge || []).includes("senior");
+
+      openModal("제품 수정");
+    };
+
+    // ─── 폼 제출 (추가 / 수정) ──────────────────────────────────────────────
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById("modal-submit");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "저장 중…";
+
+      const id = document.getElementById("f-id").value;
+
+      const targetSpecies = ["cat","dog"].filter(v =>
+        document.getElementById(`f-${v}`).checked
+      );
+      const targetAge = ["kitten","adult","senior"].filter(v =>
+        document.getElementById(`f-${v}`).checked
+      );
+      const healthTagsRaw = document.getElementById("f-healthTags").value.trim();
+      const healthTags = healthTagsRaw
+        ? healthTagsRaw.split(/[,，]+/).map(t => t.trim()).filter(Boolean)
+        : [];
+
+      const data = {
+        category:      document.getElementById("f-category").value,
+        name:          document.getElementById("f-name").value.trim(),
+        description:   document.getElementById("f-description").value.trim(),
+        badge:         document.getElementById("f-badge").value,
+        imageUrl:      document.getElementById("f-imageUrl").value.trim(),
+        link:          document.getElementById("f-link").value.trim(),
+        targetSpecies,
+        targetAge,
+        healthTags,
+      };
+
+      try {
+        if (id) {
+          await updateDoc(doc(db, "products", id), data);
+          const idx = allProducts.findIndex(x => x.id === id);
+          if (idx !== -1) allProducts[idx] = { id, ...data };
+          toast("✅ 수정 완료");
+        } else {
+          const ref = await addDoc(collection(db, "products"), {
+            ...data, createdAt: serverTimestamp(),
+          });
+          allProducts.unshift({ id: ref.id, ...data });
+          toast("✅ 추가 완료");
+        }
+        closeModal();
+        renderTable();
+      } catch (err) {
+        alert("저장 실패: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "저장";
+      }
+    });
+
+    // ─── 삭제 ───────────────────────────────────────────────────────────────
+    window.confirmDelete = async (id, name) => {
+      if (!confirm(`"${name}" 제품을 삭제할까요?`)) return;
+      try {
+        await deleteDoc(doc(db, "products", id));
+        allProducts = allProducts.filter(x => x.id !== id);
+        renderTable();
+        toast("🗑️ 삭제 완료");
+      } catch (err) {
+        alert("삭제 실패: " + err.message);
+      }
+    };
+
+    // ─── 토스트 ─────────────────────────────────────────────────────────────
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2500);
+    }
+  </script>
+</body>
+</html>
