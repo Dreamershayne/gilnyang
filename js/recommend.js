@@ -21,14 +21,14 @@ const NAVER_WORKER_URL = "https://naver-shopping-proxy.chloepark813.workers.dev"
 
 // ─── 카테고리 메타 ──────────────────────────────────────────────────────────
 const CATEGORIES = {
-  nutrition: { label: "영양",       icon: "🍖", bgColor: "#E8F5E9", color: "#2E7D32", borderColor: "#A5D6A7" },
-  grooming:  { label: "그루밍",     icon: "🪮", bgColor: "#E3F2FD", color: "#1565C0", borderColor: "#90CAF9" },
-  health:    { label: "건강",       icon: "💊", bgColor: "#FCE4EC", color: "#C62828", borderColor: "#F48FB1" },
-  play:      { label: "놀이",       icon: "🎾", bgColor: "#FFF9C4", color: "#F57F17", borderColor: "#FFF176" },
-  living:    { label: "리빙",       icon: "🏡", bgColor: "#F3E5F5", color: "#6A1B9A", borderColor: "#CE93D8" },
-  travel:    { label: "이동/외출",  icon: "🚗", bgColor: "#E0F7FA", color: "#006064", borderColor: "#80DEEA" },
-  hygiene:   { label: "위생",       icon: "🧴", bgColor: "#FBE9E7", color: "#BF360C", borderColor: "#FFAB91" },
-  rescue:    { label: "구조/입양",  icon: "🆘", bgColor: "#FFEBEE", color: "#B71C1C", borderColor: "#EF9A9A" },
+  nutrition: { label: "영양",       icon: "🍖", bgColor: "#F0F4F8", color: "#4A6FA5", borderColor: "#B0C4D8" },
+  grooming:  { label: "그루밍",     icon: "🪮", bgColor: "#EEF2F7", color: "#5B7FA6", borderColor: "#AABFD4" },
+  health:    { label: "건강",       icon: "💊", bgColor: "#F5F5F5", color: "#707070", borderColor: "#C8C8C8" },
+  play:      { label: "놀이",       icon: "🎾", bgColor: "#EAF0F8", color: "#3D6B9E", borderColor: "#9DB8D6" },
+  living:    { label: "리빙",       icon: "🏡", bgColor: "#F2F5F9", color: "#5570A0", borderColor: "#B8CAE0" },
+  travel:    { label: "이동/외출",  icon: "🚗", bgColor: "#F7F7F7", color: "#888888", borderColor: "#D0D0D0" },
+  hygiene:   { label: "위생",       icon: "🧴", bgColor: "#EDF1F7", color: "#4A6899", borderColor: "#A8C0D8" },
+  rescue:    { label: "구조/입양",  icon: "🆘", bgColor: "#F5F5F5", color: "#757575", borderColor: "#C5C5C5" },
 };
 
 // ─── 로그인 상태 감지 → 펫 프로필 자동 로드 ─────────────────────────────────
