@@ -208,7 +208,7 @@ function renderCategoryCards(products) {
              onmouseover="this.style.transform='translateY(-2px)'"
              onmouseout="this.style.transform=''">
           <div style="font-size:36px;">${info.icon}</div>
-          <span class="badge ${info.badgeClass}">${info.label}</span>
+          <span class="badge ${info.badgeClass}" style="border-radius:20px; padding:4px 12px; border:1.5px solid currentColor;">${info.label}</span>
           <p style="font-size:16px; font-weight:700;">${info.label} 제품</p>
           <p class="cat-arrow" style="font-size:13px; color:var(--color-text-muted); line-height:1.6;">
             ${grouped[cat].length}개 추천 · 탭하여 보기 ▾
