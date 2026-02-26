@@ -21,10 +21,14 @@ const NAVER_WORKER_URL = "https://naver-shopping-proxy.chloepark813.workers.dev"
 
 // ─── 카테고리 메타 ──────────────────────────────────────────────────────────
 const CATEGORIES = {
-  nutrition: { label: "영양",   icon: "🍖", badgeClass: "badge--green"  },
-  grooming:  { label: "그루밍", icon: "🪮", badgeClass: "badge--blue"   },
-  health:    { label: "건강",   icon: "💊", badgeClass: "badge--red"    },
-  play:      { label: "놀이",   icon: "🏠", badgeClass: "badge--yellow" },
+  nutrition: { label: "영양",       icon: "🍖", badgeClass: "badge--green"  },
+  grooming:  { label: "그루밍",     icon: "🪮", badgeClass: "badge--blue"   },
+  health:    { label: "건강",       icon: "💊", badgeClass: "badge--red"    },
+  play:      { label: "놀이",       icon: "🎾", badgeClass: "badge--yellow" },
+  living:    { label: "리빙",       icon: "🏡", badgeClass: "badge--green"  },
+  travel:    { label: "이동/외출",  icon: "🚗", badgeClass: "badge--blue"   },
+  hygiene:   { label: "위생",       icon: "🧴", badgeClass: "badge--red"    },
+  rescue:    { label: "구조/입양",  icon: "🆘", badgeClass: "badge--yellow" },
 };
 
 // ─── 로그인 상태 감지 → 펫 프로필 자동 로드 ─────────────────────────────────
@@ -246,13 +250,16 @@ function renderCategoryCards(products) {
       if (!isOpen) {
         list.style.display = "block";
         // 네이버 실제 제품 로드
-        const catInfo = CATEGORIES[cat];
         const petType = petTypeEl.value === "cat" ? "고양이" : "강아지";
         const queryMap = {
           nutrition: `${petType} 사료`,
           grooming:  `${petType} 브러쉬 그루밍`,
           health:    `${petType} 영양제 건강`,
           play:      `${petType} 장난감`,
+          living:    `${petType} 하우스 리빙`,
+          travel:    `${petType} 이동장 캐리어`,
+          hygiene:   `${petType} 위생 모래 패드`,
+          rescue:    `${petType} 구조 입양 용품`,
         };
         const naverSection = document.getElementById(`naver-products-${cat}`);
         if (naverSection && !naverSection.dataset.loaded) {

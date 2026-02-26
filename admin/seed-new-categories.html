@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제품 데이터 시딩 (신규 카테고리)</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <style>
+    body { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    pre  { background: var(--color-bg-secondary, #f5f5f5); border-radius: 8px;
+           padding: 12px; font-size: 12px; overflow-x: auto; }
+    .log { margin-top: 20px; max-height: 400px; overflow-y: auto; }
+    .log p { margin: 4px 0; font-size: 13px; }
+    .ok  { color: #2E7D32; }
+    .err { color: #c62828; }
+  </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SPJ53Y25V9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SPJ53Y25V9');
+  </script>
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "vkc46c6abo");
+  </script>
+</head>
+<body>
+  <h2>🌱 신규 카테고리 제품 시딩</h2>
+  <p style="color:var(--color-text-muted); font-size:14px;">
+    living · travel · hygiene · rescue 카테고리 제품 16개를 Firestore에 추가합니다.<br>
+    <strong>⚠️ 중복 실행 시 동일 제품이 여러 번 추가될 수 있습니다.</strong>
+  </p>
+
+  <button class="btn btn--primary" id="seed-btn" style="margin-top:16px;">
+    🚀 Firestore에 데이터 추가
+  </button>
+  <button class="btn" id="clear-btn" style="margin-top:16px; margin-left:8px;">
+    🗑️ 로그 지우기
+  </button>
+
+  <div class="log card" id="log" style="margin-top:24px; padding:16px; display:none;">
+    <p style="font-weight:700; margin-bottom:8px;">실행 로그</p>
+    <div id="log-body"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp,
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCrTc8dfSzjqTcsFi-ytUnh_ZsWdhGQlWE",
+      authDomain: "gilnyang-a9516.firebaseapp.com",
+      projectId: "gilnyang-a9516",
+      storageBucket: "gilnyang-a9516.firebasestorage.app",
+      messagingSenderId: "496614893032",
+      appId: "1:496614893032:web:51352e2f69dde60774f05d",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // ─── 신규 제품 데이터 ──────────────────────────────────────────────────────
+    const NEW_PRODUCTS = [
+      // ── living (리빙) ──────────────────────────────────────────────────────
+      {
+        category:      "living",
+        name:          "순환식 정수기 자동급수기",
+        description:   "활성탄 필터로 깨끗한 물을 24시간 순환 공급. 고양이·강아지 모두 사용 가능.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "BEST",
+        healthTags:    ["신장", "수분섭취", "요로"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/living-waterfountain",
+      },
+      {
+        category:      "living",
+        name:          "메모리폼 프리미엄 펫 침대",
+        description:   "저반발 메모리폼으로 관절을 부드럽게 지지. 커버 세탁 가능.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["adult", "senior"],
+        badge:         "",
+        healthTags:    ["관절", "노령"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/living-petbed",
+      },
+      {
+        category:      "living",
+        name:          "대형 캣타워 (5단)",
+        description:   "스크래처·해먹·플랫폼 일체형. 고양이 본능적인 수직 운동 욕구 충족.",
+        targetSpecies: ["cat"],
+        targetAge:     ["kitten", "adult"],
+        badge:         "NEW",
+        healthTags:    ["스트레스", "운동"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/living-cattower",
+      },
+      {
+        category:      "living",
+        name:          "타이머 자동급식기",
+        description:   "최대 6끼 자동 배식. 1~99g 단위 조절 가능. 부재 시에도 걱정 없는 급식.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "",
+        healthTags:    ["비만", "식이관리"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/living-autofeeder",
+      },
+
+      // ── travel (이동/외출) ─────────────────────────────────────────────────
+      {
+        category:      "travel",
+        name:          "기내 반입 소프트 캐리어",
+        description:   "항공사 규격 준수. 통기성 메쉬 패널, 바닥 방수 처리. 기내 슬리퍼 포함.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "BEST",
+        healthTags:    [],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/travel-carrier",
+      },
+      {
+        category:      "travel",
+        name:          "조절식 하네스 + 리드줄 세트",
+        description:   "H형 가슴 분산 구조로 목 부담 없음. 반사 소재로 야간 안전 보행.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult"],
+        badge:         "",
+        healthTags:    ["외출", "운동"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/travel-harness",
+      },
+      {
+        category:      "travel",
+        name:          "차량용 펫 안전벨트 시트커버",
+        description:   "뒷좌석 시트커버 + 안전벨트 일체형. 이중 후크로 급제동 시에도 안전.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["adult", "senior"],
+        badge:         "",
+        healthTags:    [],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/travel-carseat",
+      },
+      {
+        category:      "travel",
+        name:          "접이식 경량 이동장",
+        description:   "1kg 경량 알루미늄 프레임. 사용 후 평평하게 접어 보관 간편.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "NEW",
+        healthTags:    [],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/travel-foldcage",
+      },
+
+      // ── hygiene (위생) ─────────────────────────────────────────────────────
+      {
+        category:      "hygiene",
+        name:          "천연 두부 모래 (무향·응고형)",
+        description:   "100% 두부 부산물 원료. 강한 응고력, 먼지 거의 없음. 변기 수세 가능.",
+        targetSpecies: ["cat"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "BEST",
+        healthTags:    ["호흡기", "먼지"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/hygiene-tofusand",
+      },
+      {
+        category:      "hygiene",
+        name:          "항균 배변 패드 (100매)",
+        description:   "항균 은이온 코팅으로 냄새·세균 동시 억제. 4겹 구조로 역류 차단.",
+        targetSpecies: ["dog"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "",
+        healthTags:    [],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/hygiene-pad",
+      },
+      {
+        category:      "hygiene",
+        name:          "바이오 탈취·소취 스프레이",
+        description:   "효소 기반 천연 성분. 카펫·소파·화장실 등 어디서나 사용 가능.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "",
+        healthTags:    [],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/hygiene-deodor",
+      },
+      {
+        category:      "hygiene",
+        name:          "자동 전동 모래 청소기 (스쿠퍼)",
+        description:   "사용 감지 후 15분 자동 회전 청소. 앱 연동으로 배변 횟수 모니터링 가능.",
+        targetSpecies: ["cat"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "NEW",
+        healthTags:    ["건강모니터링"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/hygiene-autolitter",
+      },
+
+      // ── rescue (구조/입양) ─────────────────────────────────────────────────
+      {
+        category:      "rescue",
+        name:          "인도적 포획 트랩 케이지",
+        description:   "TNR 활동용 스테인레스 트랩. 발판 감지 자동 잠금. 고양이 부상 방지 설계.",
+        targetSpecies: ["cat"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "",
+        healthTags:    ["TNR", "구조"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/rescue-trap",
+      },
+      {
+        category:      "rescue",
+        name:          "응급구조·임시보호 키트",
+        description:   "구조 직후 필요한 보온 담요·장갑·스포이드·응급약 패키지 세트.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "BEST",
+        healthTags:    ["구조", "응급"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/rescue-kit",
+      },
+      {
+        category:      "rescue",
+        name:          "수술 후 회복 소프트 넥카라",
+        description:   "중성화·수술 후 부드러운 패브릭 소재 넥카라. 수면 방해 없음.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult", "senior"],
+        badge:         "",
+        healthTags:    ["중성화", "수술회복"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/rescue-collar",
+      },
+      {
+        category:      "rescue",
+        name:          "신규 입양 스타터 키트",
+        description:   "밥그릇·물그릇·화장실·스크래처·장난감 포함. 입양 첫날부터 준비 완료.",
+        targetSpecies: ["cat", "dog"],
+        targetAge:     ["kitten", "adult"],
+        badge:         "NEW",
+        healthTags:    ["입양"],
+        imageUrl:      "",
+        link:          "https://link.coupang.com/a/rescue-starterkit",
+      },
+    ];
+
+    // ─── 로그 헬퍼 ──────────────────────────────────────────────────────────
+    const logBody = document.getElementById("log-body");
+    const logBox  = document.getElementById("log");
+
+    function log(msg, type = "") {
+      logBox.style.display = "block";
+      const p = document.createElement("p");
+      p.className = type;
+      p.textContent = msg;
+      logBody.appendChild(p);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    // ─── 시딩 실행 ──────────────────────────────────────────────────────────
+    document.getElementById("seed-btn").addEventListener("click", async () => {
+      const btn = document.getElementById("seed-btn");
+      btn.disabled = true;
+      btn.textContent = "추가 중...";
+      logBody.innerHTML = "";
+      logBox.style.display = "block";
+
+      let ok = 0, fail = 0;
+      const productsRef = collection(db, "products");
+
+      for (const product of NEW_PRODUCTS) {
+        try {
+          const docRef = await addDoc(productsRef, {
+            ...product,
+            createdAt: serverTimestamp(),
+          });
+          log(`✅ [${product.category}] ${product.name} (id: ${docRef.id})`, "ok");
+          ok++;
+        } catch (e) {
+          log(`❌ [${product.category}] ${product.name} — ${e.message}`, "err");
+          fail++;
+        }
+      }
+
+      log(`─────────────────────────────`, "");
+      log(`완료: 성공 ${ok}개 / 실패 ${fail}개`, ok === NEW_PRODUCTS.length ? "ok" : "err");
+      btn.textContent = "🚀 Firestore에 데이터 추가";
+      btn.disabled = false;
+    });
+
+    document.getElementById("clear-btn").addEventListener("click", () => {
+      logBody.innerHTML = "";
+      logBox.style.display = "none";
+    });
+  </script>
+</body>
+</html>
