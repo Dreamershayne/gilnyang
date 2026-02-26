@@ -21,14 +21,14 @@ const NAVER_WORKER_URL = "https://naver-shopping-proxy.chloepark813.workers.dev"
 
 // ─── 카테고리 메타 ──────────────────────────────────────────────────────────
 const CATEGORIES = {
-  nutrition: { label: "영양",       icon: "🍖", badgeClass: "badge--green"  },
-  grooming:  { label: "그루밍",     icon: "🪮", badgeClass: "badge--blue"   },
-  health:    { label: "건강",       icon: "💊", badgeClass: "badge--red"    },
-  play:      { label: "놀이",       icon: "🎾", badgeClass: "badge--yellow" },
-  living:    { label: "리빙",       icon: "🏡", badgeClass: "badge--green"  },
-  travel:    { label: "이동/외출",  icon: "🚗", badgeClass: "badge--blue"   },
-  hygiene:   { label: "위생",       icon: "🧴", badgeClass: "badge--red"    },
-  rescue:    { label: "구조/입양",  icon: "🆘", badgeClass: "badge--yellow" },
+  nutrition: { label: "영양",       icon: "🍖", bgColor: "#E8F5E9", color: "#2E7D32", borderColor: "#A5D6A7" },
+  grooming:  { label: "그루밍",     icon: "🪮", bgColor: "#E3F2FD", color: "#1565C0", borderColor: "#90CAF9" },
+  health:    { label: "건강",       icon: "💊", bgColor: "#FCE4EC", color: "#C62828", borderColor: "#F48FB1" },
+  play:      { label: "놀이",       icon: "🎾", bgColor: "#FFF9C4", color: "#F57F17", borderColor: "#FFF176" },
+  living:    { label: "리빙",       icon: "🏡", bgColor: "#F3E5F5", color: "#6A1B9A", borderColor: "#CE93D8" },
+  travel:    { label: "이동/외출",  icon: "🚗", bgColor: "#E0F7FA", color: "#006064", borderColor: "#80DEEA" },
+  hygiene:   { label: "위생",       icon: "🧴", bgColor: "#FBE9E7", color: "#BF360C", borderColor: "#FFAB91" },
+  rescue:    { label: "구조/입양",  icon: "🆘", bgColor: "#FFEBEE", color: "#B71C1C", borderColor: "#EF9A9A" },
 };
 
 // ─── 로그인 상태 감지 → 펫 프로필 자동 로드 ─────────────────────────────────
@@ -208,7 +208,7 @@ function renderCategoryCards(products) {
              onmouseover="this.style.transform='translateY(-2px)'"
              onmouseout="this.style.transform=''">
           <div style="font-size:36px;">${info.icon}</div>
-          <span class="badge ${info.badgeClass}" style="border-radius:20px; padding:4px 12px; border:1.5px solid currentColor;">${info.label}</span>
+          <span style="border-radius:20px; padding:4px 12px; border:1.5px solid ${info.borderColor}; background:${info.bgColor}; color:${info.color}; font-size:13px; font-weight:600;">${info.label}</span>
           <p style="font-size:16px; font-weight:700;">${info.label} 제품</p>
           <p class="cat-arrow" style="font-size:13px; color:var(--color-text-muted); line-height:1.6;">
             ${grouped[cat].length}개 추천 · 탭하여 보기 ▾
