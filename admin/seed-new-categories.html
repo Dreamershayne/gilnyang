@@ -38,12 +38,15 @@
     <strong>⚠️ 중복 실행 시 동일 제품이 여러 번 추가될 수 있습니다.</strong>
   </p>
 
-  <button class="btn btn--primary" id="seed-btn" style="margin-top:16px;">
-    🚀 Firestore에 데이터 추가
-  </button>
-  <button class="btn" id="clear-btn" style="margin-top:16px; margin-left:8px;">
-    🗑️ 로그 지우기
-  </button>
+  <div id="auth-section" style="margin-top:16px;">
+    <button class="btn btn--primary" id="login-btn">🔑 Google 로그인 후 시딩 시작</button>
+  </div>
+  <div id="seed-section" style="margin-top:16px; display:none;">
+    <p id="user-info" style="font-size:13px; color:var(--color-text-muted); margin-bottom:12px;"></p>
+    <button class="btn btn--primary" id="seed-btn">🚀 Firestore에 데이터 추가</button>
+    <button class="btn" id="clear-btn" style="margin-left:8px;">🗑️ 로그 지우기</button>
+    <button class="btn" id="logout-btn" style="margin-left:8px;">로그아웃</button>
+  </div>
 
   <div class="log card" id="log" style="margin-top:24px; padding:16px; display:none;">
     <p style="font-weight:700; margin-bottom:8px;">실행 로그</p>
@@ -52,6 +55,13 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged,
+      GoogleAuthProvider,
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import {
       getFirestore,
       collection,
@@ -68,8 +78,29 @@
       appId: "1:496614893032:web:51352e2f69dde60774f05d",
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
+    const app      = initializeApp(firebaseConfig);
+    const auth     = getAuth(app);
+    const db       = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // ─── 로그인 상태 감지 ────────────────────────────────────────────────────
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("auth-section").style.display = "none";
+        document.getElementById("seed-section").style.display = "block";
+        document.getElementById("user-info").textContent = `✅ 로그인: ${user.email}`;
+      } else {
+        document.getElementById("auth-section").style.display = "block";
+        document.getElementById("seed-section").style.display = "none";
+      }
+    });
+
+    document.getElementById("login-btn").addEventListener("click", () =>
+      signInWithPopup(auth, provider).catch(e => alert("로그인 실패: " + e.message))
+    );
+    document.getElementById("logout-btn").addEventListener("click", () =>
+      signOut(auth)
+    );
 
     // ─── 신규 제품 데이터 ──────────────────────────────────────────────────────
     const NEW_PRODUCTS = [
