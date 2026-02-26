@@ -289,7 +289,11 @@ function renderCategoryCards(products) {
 // ─── 개별 제품 카드 HTML 생성 ────────────────────────────────────────────────
 function renderProductCard(p, catInfo) {
   const badge = p.badge
-    ? `<span class="badge badge--green" style="font-size:11px; width:fit-content;">${p.badge}</span>`
+    ? p.badge === "온유집사 추천"
+      ? `<span class="badge" style="font-size:11px; width:fit-content;
+           background:linear-gradient(90deg,#f59e0b,#ef4444); color:#fff;
+           border:none; padding:3px 10px;">⭐ 온유집사 추천</span>`
+      : `<span class="badge badge--green" style="font-size:11px; width:fit-content;">${p.badge}</span>`
     : "";
   const imgHtml = p.imageUrl
     ? `<img src="${p.imageUrl}" alt="${p.name}"
