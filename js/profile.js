@@ -20,6 +20,13 @@ import {
   getDownloadURL,
 } from "/js/firebase-config.js";
 
+// ─── 건강 기록 상수 ────────────────────────────────────────────────────────────
+const CHECKLIST_TOTALS = { kitten: 5, adult: 4, senior: 5 };
+const SYMPTOM_LABELS   = {
+  s1: "식욕 감소", s2: "다음(多飮)", s3: "배변 이상", s4: "은신 증가",
+  s5: "그루밍 이상", s6: "눈꼽·콧물", s7: "운동 기피", s8: "발성 변화",
+};
+
 const loggedOutView = document.getElementById("logged-out-view");
 const loggedInView  = document.getElementById("logged-in-view");
 const profileLoginBtn = document.getElementById("profile-login-btn");
@@ -51,12 +58,13 @@ document.getElementById("pet-photo-input").addEventListener("change", (e) => {
 });
 
 // ─── Auth 상태 감지 ───────────────────────────────────────────────────────────
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   currentUser = user;
   if (user) {
     loggedOutView.style.display = "none";
     loggedInView.style.display  = "block";
-    loadPets(user.uid);
+    await loadPets(user.uid);
+    loadHealthRecords(user.uid);
   } else {
     loggedOutView.style.display = "block";
     loggedInView.style.display  = "none";
@@ -261,6 +269,114 @@ async function deletePet(petId, name) {
     console.error("삭제 오류:", e);
     alert("삭제 중 오류가 발생했습니다.");
   }
+}
+
+// ─── 건강 기록 로딩 ───────────────────────────────────────────────────────────
+async function loadHealthRecords(uid) {
+  const now      = new Date();
+  const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const monthKR  = `${now.getFullYear()}년 ${now.getMonth() + 1}월`;
+  document.getElementById("checklist-month-label").textContent = monthKR;
+
+  // ── 체크리스트 완료율 ──────────────────────────────────────────────────────
+  try {
+    const petsSnap = await getDocs(collection(db, "users", uid, "pets"));
+    const pets = petsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    let totalItems = 0, doneItems = 0;
+
+    await Promise.all(pets.map(async (pet) => {
+      const ageGroup = calcAgeGroup(pet.birthday);
+      const total    = CHECKLIST_TOTALS[ageGroup] || 4;
+      totalItems    += total;
+
+      const docSnap = await getDoc(doc(db, "users", uid, "checklist", `${monthKey}_${pet.id}`));
+      if (docSnap.exists()) {
+        const items = docSnap.data().items || {};
+        doneItems  += Object.keys(items).length;
+      }
+    }));
+
+    const pct = totalItems ? Math.round((doneItems / totalItems) * 100) : 0;
+    document.getElementById("checklist-summary").innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
+        <span style="font-size:28px; font-weight:800; color:#2F5BFF;">${pct}%</span>
+        <span style="font-size:13px; color:var(--color-text-muted);">${doneItems} / ${totalItems} 완료</span>
+      </div>
+      <div style="background:var(--color-bg-alt,#EFEFED); border-radius:100px; height:10px; overflow:hidden;">
+        <div style="width:${pct}%; height:100%; background:#2F5BFF; border-radius:100px; transition:width .4s;"></div>
+      </div>
+      <p style="font-size:12px; color:var(--color-text-muted); margin:10px 0 0;">
+        ${pct === 100 ? "🎉 이달 케어 완료!" : pct >= 50 ? "👍 절반 이상 완료했어요" : "아직 체크하지 않은 항목이 있어요"}
+      </p>
+      <a href="/pages/health-checklist.html" style="font-size:13px; color:#2F5BFF; text-decoration:none; display:inline-block; margin-top:12px;">
+        체크리스트 바로가기 →
+      </a>
+    `;
+  } catch (e) {
+    console.error("체크리스트 로드 오류:", e);
+    document.getElementById("checklist-summary").innerHTML =
+      `<p style="font-size:13px; color:var(--color-text-muted);">불러오기 실패</p>`;
+  }
+
+  // ── 최근 7일 증상 기록 ────────────────────────────────────────────────────
+  try {
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    });
+
+    const records = await Promise.all(days.map(async (dateKey) => {
+      const snap = await getDoc(doc(db, "users", uid, "symptoms", dateKey));
+      return { dateKey, data: snap.exists() ? snap.data() : null };
+    }));
+
+    const hasAny = records.some(r => r.data);
+    const el     = document.getElementById("symptom-summary");
+
+    if (!hasAny) {
+      el.innerHTML = `<p style="font-size:13px; color:var(--color-text-muted); line-height:1.8;">최근 7일 증상 기록이 없어요.</p>`;
+      return;
+    }
+
+    el.innerHTML = records
+      .filter(r => r.data)
+      .map(({ dateKey, data }) => {
+        const symptoms   = Object.keys(data.symptoms || {});
+        const isWarning  = symptoms.length >= 3;
+        const dateLabel  = dateKey.slice(5).replace("-", "/");
+        const sympLabels = symptoms.map(id => SYMPTOM_LABELS[id] || id).join(", ");
+        return `
+          <div style="padding:10px 0; border-bottom:1px solid var(--color-border,#E8E8E6);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <span style="font-size:13px; font-weight:700; color:${isWarning ? "#C62828" : "var(--color-text)"};">
+                ${isWarning ? "🔴" : "🟡"} ${dateLabel}
+              </span>
+              ${isWarning ? `<span style="font-size:11px; padding:1px 8px; border-radius:100px; background:#FFEBEE; color:#C62828; border:1px solid #FFCDD2;">병원 권장</span>` : ""}
+            </div>
+            <p style="font-size:12px; color:var(--color-text-muted); margin:0; line-height:1.6;">
+              ${sympLabels || "이상 없음"}
+            </p>
+          </div>
+        `;
+      }).join("") +
+      `<a href="/pages/health-checklist.html" style="font-size:13px; color:#2F5BFF; text-decoration:none; display:inline-block; margin-top:12px;">
+        증상 체크하러 가기 →
+      </a>`;
+  } catch (e) {
+    console.error("증상 기록 로드 오류:", e);
+    document.getElementById("symptom-summary").innerHTML =
+      `<p style="font-size:13px; color:var(--color-text-muted);">불러오기 실패</p>`;
+  }
+}
+
+function calcAgeGroup(birthday) {
+  if (!birthday) return "adult";
+  const years = (Date.now() - new Date(birthday).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+  if (years < 1) return "kitten";
+  if (years < 8) return "adult";
+  return "senior";
 }
 
 // ─── 유틸 ─────────────────────────────────────────────────────────────────────

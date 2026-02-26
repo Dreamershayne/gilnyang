@@ -161,6 +161,31 @@
           <p class="empty-state__desc">첫 번째 아이의 프로필을 만들어보세요!</p>
         </div>
 
+        <!-- ── 건강 기록 섹션 ── -->
+        <div id="health-records" style="margin-top:56px;">
+          <h2 style="font-size:22px; font-weight:700; margin-bottom:24px;">🩺 건강 기록</h2>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:20px;">
+
+            <!-- 이달의 케어 체크리스트 완료율 -->
+            <div class="card">
+              <p style="font-size:13px; font-weight:600; color:var(--color-text-muted); margin:0 0 12px;" id="checklist-month-label"></p>
+              <h3 style="font-size:16px; font-weight:700; margin:0 0 16px;">📋 이달의 케어 체크리스트</h3>
+              <div id="checklist-summary">
+                <div style="height:60px; background:var(--color-bg-alt,#EFEFED); border-radius:8px; animation:pulse 1.5s infinite;"></div>
+              </div>
+            </div>
+
+            <!-- 최근 7일 증상 기록 -->
+            <div class="card">
+              <p style="font-size:13px; font-weight:600; color:var(--color-text-muted); margin:0 0 12px;">최근 7일</p>
+              <h3 style="font-size:16px; font-weight:700; margin:0 0 16px;">🔍 증상 체크 기록</h3>
+              <div id="symptom-summary"></div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
 
     </div>
