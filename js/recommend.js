@@ -21,12 +21,12 @@ const NAVER_WORKER_URL = "https://naver-shopping-proxy.chloepark813.workers.dev"
 
 // ─── 카테고리 메타 ──────────────────────────────────────────────────────────
 const CATEGORIES = {
-  nutrition: { label: "영양",       icon: "🍖", bgColor: "#E8F5E9", color: "#2E7D32", borderColor: "#A5D6A7" },
-  grooming:  { label: "그루밍",     icon: "🪮", bgColor: "#E3F2FD", color: "#1565C0", borderColor: "#90CAF9" },
+  nutrition: { label: "영양",       icon: "🍖", bgColor: "#EEF1FF", color: "#2F5BFF", borderColor: "#ADBCFF" },
+  grooming:  { label: "그루밍",     icon: "🪮", bgColor: "#F0F4FF", color: "#1A3FE0", borderColor: "#B8C8FF" },
   health:    { label: "건강",       icon: "💊", bgColor: "#F5F5F5", color: "#616161", borderColor: "#BDBDBD" },
-  play:      { label: "놀이",       icon: "🎾", bgColor: "#F1F8E9", color: "#43A047", borderColor: "#C5E1A5" },
-  living:    { label: "리빙",       icon: "🏡", bgColor: "#ECEFF1", color: "#546E7A", borderColor: "#B0BEC5" },
-  travel:    { label: "이동/외출",  icon: "🚗", bgColor: "#E1F5FE", color: "#0277BD", borderColor: "#81D4FA" },
+  play:      { label: "놀이",       icon: "🎾", bgColor: "#EBF0FF", color: "#2F5BFF", borderColor: "#A0B4FF" },
+  living:    { label: "리빙",       icon: "🏡", bgColor: "#F3F5FF", color: "#3A50D0", borderColor: "#C0CCFF" },
+  travel:    { label: "이동/외출",  icon: "🚗", bgColor: "#E8ECFF", color: "#1A3FE0", borderColor: "#A8BAFF" },
   hygiene:   { label: "위생",       icon: "🧴", bgColor: "#FAFAFA", color: "#757575", borderColor: "#E0E0E0" },
   rescue:    { label: "구조/입양",  icon: "🆘", bgColor: "#EEEEEE", color: "#424242", borderColor: "#BDBDBD" },
 };
