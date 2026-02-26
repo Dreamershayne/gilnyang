@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>건강 체크리스트 | 길냥이집사</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <style>
+    /* ── 공통 ── */
+    .section-wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── 진행률 바 ── */
+    .progress-bar-wrap {
+      background: var(--color-bg-alt, #EFEFED);
+      border-radius: 100px; height: 10px; overflow: hidden; margin: 12px 0 6px;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 100px;
+      background: #2F5BFF;
+      transition: width .4s ease;
+    }
+    .progress-label {
+      font-size: 13px; color: var(--color-text-muted, #767672); text-align: right;
+    }
+
+    /* ── 체크리스트 아이템 ── */
+    .checklist-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px; border-radius: 12px;
+      border: 1.5px solid var(--color-border, #E8E8E6);
+      margin-bottom: 10px; cursor: pointer;
+      transition: border-color .2s, background .2s;
+      user-select: none;
+    }
+    .checklist-item:hover { border-color: #2F5BFF; background: #F5F7FF; }
+    .checklist-item.checked {
+      border-color: #2F5BFF;
+      background: #EEF1FF;
+    }
+    .checklist-item.checked .item-label { color: #2F5BFF; }
+    .checklist-item input[type="checkbox"] { display: none; }
+    .check-box {
+      width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+      border: 2px solid var(--color-border, #C8C8C6);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, border-color .2s;
+    }
+    .checklist-item.checked .check-box {
+      background: #2F5BFF; border-color: #2F5BFF; color: #fff;
+    }
+    .check-box::after { content: ""; display: none; }
+    .checklist-item.checked .check-box::after {
+      content: "✓"; display: block; font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .item-label { font-size: 15px; font-weight: 500; flex: 1; }
+    .item-badge {
+      font-size: 11px; padding: 2px 9px; border-radius: 100px;
+      background: #EEF1FF; color: #2F5BFF; border: 1px solid #ADBCFF;
+      white-space: nowrap;
+    }
+
+    /* ── 증상 체크 ── */
+    .symptom-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px; border-radius: 12px;
+      border: 1.5px solid var(--color-border, #E8E8E6);
+      margin-bottom: 10px; cursor: pointer;
+      transition: border-color .2s, background .2s;
+      user-select: none;
+    }
+    .symptom-item:hover { border-color: #FF5B5B; background: #FFF5F5; }
+    .symptom-item.checked { border-color: #FF5B5B; background: #FFF0F0; }
+    .symptom-item.checked .item-label { color: #C62828; }
+    .symptom-item.checked .check-box {
+      background: #EF5350; border-color: #EF5350;
+    }
+    .symptom-item.checked .check-box::after { content: "✓"; }
+
+    /* ── 경고 배너 ── */
+    .warning-banner {
+      display: none; padding: 16px 20px; border-radius: 12px;
+      background: #FFF3F3; border: 1.5px solid #FFCDD2;
+      color: #C62828; font-size: 14px; line-height: 1.7;
+      margin-top: 20px;
+    }
+    .warning-banner.show { display: block; }
+    .warning-banner strong { display: block; font-size: 15px; margin-bottom: 4px; }
+
+    /* ── 저장 완료 토스트 ── */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1A1A1A; color: #fff; padding: 10px 22px; border-radius: 100px;
+      font-size: 13px; opacity: 0; pointer-events: none;
+      transition: opacity .3s; z-index: 200;
+    }
+    #toast.show { opacity: 1; }
+
+    /* ── 비로그인 배너 ── */
+    .login-nudge {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px; border-radius: 12px;
+      background: #EEF1FF; border: 1.5px solid #ADBCFF;
+      margin-bottom: 24px; font-size: 14px; color: #2F5BFF;
+    }
+    .login-nudge button {
+      margin-left: auto; white-space: nowrap;
+    }
+
+    /* ── 펫 선택 칩 ── */
+    .pet-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .pet-chip {
+      padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 600;
+      border: 1.5px solid var(--color-border, #E8E8E6);
+      background: var(--color-bg, #fff); cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .pet-chip.active { background: #2F5BFF; color: #fff; border-color: #2F5BFF; }
+
+    body.dark .checklist-item:hover  { background: #0D1533; }
+    body.dark .checklist-item.checked { background: #0D1533; }
+    body.dark .symptom-item:hover    { background: #1A0A0A; }
+    body.dark .symptom-item.checked  { background: #1A0A0A; }
+    body.dark .login-nudge { background: #0D1533; }
+    body.dark .warning-banner { background: #1A0505; border-color: #5C1010; color: #FF8A80; }
+  </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SPJ53Y25V9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SPJ53Y25V9');
+  </script>
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "vkc46c6abo");
+  </script>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="/" class="logo">
+        <span class="logo__icon">🐱</span>
+        <span class="logo__text">길냥이집사</span>
+      </a>
+      <nav class="nav" id="main-nav">
+        <ul class="nav__list">
+          <li><a href="/" class="nav__link"><span class="nav__icon">🏠</span>홈</a></li>
+          <li><a href="/pages/analyzer.html" class="nav__link"><span class="nav__icon">🔍</span>품종 분석기</a></li>
+          <li><a href="/pages/recommend.html" class="nav__link"><span class="nav__icon">🛍️</span>제품 추천</a></li>
+          <li><a href="/pages/rescue.html" class="nav__link"><span class="nav__icon">🐱</span>길냥이 매뉴얼</a></li>
+          <li><a href="/pages/community.html" class="nav__link"><span class="nav__icon">🤝</span>커뮤니티</a></li>
+          <li><a href="/pages/profile.html" class="nav__link"><span class="nav__icon">🐾</span>우리 아이 프로필</a></li>
+        </ul>
+      </nav>
+      <div class="header__actions">
+        <button id="theme-toggle" class="btn-icon" aria-label="테마 변경">🌙</button>
+        <button id="login-btn" class="nav-login-btn">로그인</button>
+        <div id="user-menu" class="user-menu" style="display:none;">
+          <button class="user-avatar" id="user-avatar-btn" aria-label="내 메뉴">
+            <span id="user-initial">U</span>
+          </button>
+          <div class="user-dropdown" id="user-dropdown">
+            <p class="user-dropdown__name" id="user-dropdown-name"></p>
+            <a href="/pages/profile.html" class="user-dropdown__item">🐾 우리 아이 프로필</a>
+            <div class="user-dropdown__divider"></div>
+            <button class="user-dropdown__item" id="logout-btn">로그아웃</button>
+          </div>
+        </div>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="page-hero__label">🩺 건강 관리</p>
+      <h1 class="page-hero__title">건강 체크리스트</h1>
+      <p class="page-hero__desc">이달의 케어 항목을 확인하고, 오늘 우리 아이 상태를 체크해보세요.</p>
+    </div>
+  </section>
+
+  <main style="padding: 60px 0 80px;">
+
+    <!-- ════════════════════════════════════════════
+         섹션 1: 이달의 케어 체크리스트
+    ════════════════════════════════════════════ -->
+    <div class="section-wrap" style="margin-bottom: 48px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:20px;">
+        <div>
+          <h2 style="font-size:20px; font-weight:700; margin:0 0 4px;">📋 이달의 케어 체크리스트</h2>
+          <p style="font-size:13px; color:var(--color-text-muted); margin:0;" id="checklist-month"></p>
+        </div>
+        <span id="checklist-save-status" style="font-size:12px; color:var(--color-text-muted);"></span>
+      </div>
+
+      <!-- 비로그인 안내 (로그인 후 숨김) -->
+      <div class="login-nudge" id="checklist-login-nudge">
+        <span>🔒 로그인하면 우리 아이 나이에 맞는 체크리스트와 저장 기능을 이용할 수 있어요.</span>
+        <button class="btn btn--primary" id="checklist-login-btn" style="font-size:13px; padding:7px 16px;">로그인</button>
+      </div>
+
+      <!-- 펫 선택 칩 (로그인 + 반려동물 2마리 이상일 때만 표시) -->
+      <div class="pet-chips" id="pet-chips" style="display:none;"></div>
+
+      <!-- 진행률 -->
+      <div id="progress-wrap" style="margin-bottom:20px;">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%;"></div></div>
+        <p class="progress-label"><span id="progress-text">0 / 0</span> 완료</p>
+      </div>
+
+      <!-- 체크리스트 목록 -->
+      <div id="checklist-list"></div>
+    </div>
+
+    <hr style="border:none; border-top:1px solid var(--color-border,#E8E8E6); margin: 0 auto 48px; max-width:720px;">
+
+    <!-- ════════════════════════════════════════════
+         섹션 2: 미세 증상 체크
+    ════════════════════════════════════════════ -->
+    <div class="section-wrap">
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:20px; font-weight:700; margin:0 0 4px;">🔍 오늘 우리 아이 괜찮아?</h2>
+        <p style="font-size:13px; color:var(--color-text-muted); margin:0;">미세한 이상 신호를 미리 체크해보세요. 3개 이상이면 병원 방문을 권장해요.</p>
+      </div>
+
+      <!-- 비로그인 안내 -->
+      <div class="login-nudge" id="symptom-login-nudge" style="display:none;">
+        <span>💾 로그인하면 증상 기록이 저장돼요.</span>
+      </div>
+
+      <!-- 증상 목록 -->
+      <div id="symptom-list"></div>
+
+      <!-- 경고 배너 -->
+      <div class="warning-banner" id="warning-banner">
+        <strong>🏥 병원 방문을 권장해요</strong>
+        3개 이상의 증상이 확인됐어요. 가까운 동물병원에서 진찰을 받아보세요.
+        증상이 갑자기 나타났거나 심해졌다면 빠른 시일 내에 방문하는 게 좋아요.
+      </div>
+
+      <!-- 저장 버튼 -->
+      <div style="margin-top:20px; display:flex; gap:10px; justify-content:flex-end; align-items:center;">
+        <span id="symptom-saved-label" style="font-size:12px; color:var(--color-text-muted);"></span>
+        <button class="btn btn--primary" id="symptom-save-btn">오늘 기록 저장</button>
+        <button class="btn" id="symptom-reset-btn">초기화</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer__bottom">
+      <p>© 2026 길냥이집사. All rights reserved. | gilnyang.kr</p>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script type="module" src="/main.js"></script>
+  <script type="module">
+    import {
+      auth,
+      db,
+      onAuthStateChanged,
+      signInWithPopup,
+      GoogleAuthProvider,
+      collection,
+      getDocs,
+      doc,
+      getDoc,
+      setDoc,
+      query,
+      orderBy,
+      serverTimestamp,
+    } from "/js/firebase-config.js";
+
+    // ─── 날짜 헬퍼 ────────────────────────────────────────────────────────────
+    const now       = new Date();
+    const MONTH_KEY = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const DATE_KEY  = `${MONTH_KEY}-${String(now.getDate()).padStart(2, "0")}`;
+    const MONTH_KR  = `${now.getFullYear()}년 ${now.getMonth() + 1}월`;
+
+    document.getElementById("checklist-month").textContent = `${MONTH_KR} 체크리스트`;
+
+    // ─── 체크리스트 정의 ──────────────────────────────────────────────────────
+    const COMMON_ITEMS = [
+      { id: "nail_trim",  label: "발톱 손질",  badge: "공통" },
+      { id: "ear_clean",  label: "귀 세정",    badge: "공통" },
+      { id: "brush",      label: "빗질",        badge: "공통" },
+    ];
+    const AGE_ITEMS = {
+      kitten: [
+        { id: "socialization", label: "사회화 훈련",    badge: "키튼" },
+        { id: "vaccination",   label: "초기 접종 확인", badge: "키튼" },
+      ],
+      adult: [
+        { id: "health_checkup", label: "연간 건강검진 체크", badge: "성묘/견" },
+      ],
+      senior: [
+        { id: "weight_check", label: "월 1회 체중 체크",        badge: "시니어" },
+        { id: "joint_care",   label: "관절 케어 용품 확인",     badge: "시니어" },
+      ],
+    };
+
+    // ─── 증상 정의 ────────────────────────────────────────────────────────────
+    const SYMPTOM_ITEMS = [
+      { id: "s1", label: "밥을 평소보다 덜 먹었나요?" },
+      { id: "s2", label: "물을 유독 많이 마셨나요?" },
+      { id: "s3", label: "화장실 횟수나 소변 색이 달라졌나요?" },
+      { id: "s4", label: "평소보다 숨는 시간이 늘었나요?" },
+      { id: "s5", label: "그루밍을 안 하거나 한 곳만 핥고 있나요?" },
+      { id: "s6", label: "눈꼽, 콧물, 재채기가 있었나요?" },
+      { id: "s7", label: "점프나 계단을 피하려 했나요?" },
+      { id: "s8", label: "목소리가 달라지거나 평소보다 울었나요?" },
+    ];
+
+    // ─── 상태 ─────────────────────────────────────────────────────────────────
+    let currentUser  = null;
+    let currentPet   = null;   // 선택된 펫 { birthday, species, ... }
+    let checklistItems = [];   // 현재 표시 중인 항목
+    let checkedMap   = {};     // { itemId: true }
+    let symptomChecked = {};   // { symptomId: true }
+
+    // ─── Auth ─────────────────────────────────────────────────────────────────
+    const provider = new GoogleAuthProvider();
+
+    document.getElementById("checklist-login-btn").addEventListener("click", () =>
+      signInWithPopup(auth, provider).catch(e => alert("로그인 실패: " + e.message))
+    );
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      if (user) {
+        document.getElementById("checklist-login-nudge").style.display = "none";
+        document.getElementById("symptom-login-nudge").style.display   = "none";
+        await loadPetsAndInit(user);
+      } else {
+        document.getElementById("checklist-login-nudge").style.display = "flex";
+        document.getElementById("symptom-login-nudge").style.display   = "flex";
+        document.getElementById("pet-chips").style.display = "none";
+        renderChecklist(COMMON_ITEMS, {});
+        renderSymptoms({});
+      }
+    });
+
+    // ─── 펫 프로필 로드 ──────────────────────────────────────────────────────
+    async function loadPetsAndInit(user) {
+      try {
+        const snap = await getDocs(
+          query(collection(db, "users", user.uid, "pets"), orderBy("createdAt", "desc"))
+        );
+        const pets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        if (!pets.length) {
+          renderChecklist(COMMON_ITEMS, {});
+          renderSymptoms({});
+          return;
+        }
+
+        currentPet = pets[0];
+
+        if (pets.length > 1) {
+          renderPetChips(pets);
+        }
+
+        await initChecklist(currentPet);
+        await initSymptoms(user.uid);
+      } catch (e) {
+        console.error("펫 로드 오류:", e);
+        renderChecklist(COMMON_ITEMS, {});
+        renderSymptoms({});
+      }
+    }
+
+    // ─── 펫 칩 렌더링 ────────────────────────────────────────────────────────
+    function renderPetChips(pets) {
+      const wrap = document.getElementById("pet-chips");
+      wrap.style.display = "flex";
+      wrap.innerHTML = pets.map((p, i) =>
+        `<button class="pet-chip ${i === 0 ? "active" : ""}" data-idx="${i}">
+          ${p.species === "cat" ? "😺" : "🐶"} ${p.name}
+        </button>`
+      ).join("");
+
+      wrap.querySelectorAll(".pet-chip").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          wrap.querySelectorAll(".pet-chip").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentPet = pets[parseInt(btn.dataset.idx)];
+          await initChecklist(currentPet);
+        });
+      });
+    }
+
+    // ─── 체크리스트 초기화 ───────────────────────────────────────────────────
+    async function initChecklist(pet) {
+      const ageGroup = calcAgeGroup(pet.birthday);
+      checklistItems = [...COMMON_ITEMS, ...(AGE_ITEMS[ageGroup] || [])];
+
+      // Firestore에서 저장된 체크 상태 로드
+      let saved = {};
+      if (currentUser) {
+        try {
+          const docRef = doc(db, "users", currentUser.uid, "checklist", `${MONTH_KEY}_${pet.id || "default"}`);
+          const snap   = await getDoc(docRef);
+          if (snap.exists()) saved = snap.data().items || {};
+        } catch (e) { console.error(e); }
+      }
+
+      checkedMap = saved;
+      renderChecklist(checklistItems, checkedMap);
+    }
+
+    // ─── 생일 → 나이 그룹 ────────────────────────────────────────────────────
+    function calcAgeGroup(birthday) {
+      if (!birthday) return "adult";
+      const years = (Date.now() - new Date(birthday).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+      if (years < 1) return "kitten";
+      if (years < 8) return "adult";
+      return "senior";
+    }
+
+    // ─── 체크리스트 렌더링 ───────────────────────────────────────────────────
+    function renderChecklist(items, saved) {
+      const list = document.getElementById("checklist-list");
+      list.innerHTML = items.map(item => {
+        const checked = !!saved[item.id];
+        return `
+          <div class="checklist-item ${checked ? "checked" : ""}" data-id="${item.id}">
+            <div class="check-box"></div>
+            <span class="item-label">${item.label}</span>
+            <span class="item-badge">${item.badge}</span>
+          </div>
+        `;
+      }).join("");
+
+      list.querySelectorAll(".checklist-item").forEach(el => {
+        el.addEventListener("click", () => toggleChecklist(el));
+      });
+
+      updateProgress(items, saved);
+    }
+
+    function toggleChecklist(el) {
+      const id = el.dataset.id;
+      const isChecked = el.classList.toggle("checked");
+      if (isChecked) checkedMap[id] = true;
+      else delete checkedMap[id];
+      updateProgress(checklistItems, checkedMap);
+      saveChecklist();
+    }
+
+    function updateProgress(items, saved) {
+      const total   = items.length;
+      const done    = Object.keys(saved).filter(k => items.find(i => i.id === k)).length;
+      const pct     = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById("progress-fill").style.width = `${pct}%`;
+      document.getElementById("progress-text").textContent = `${done} / ${total}`;
+    }
+
+    // ─── 체크리스트 Firestore 저장 ───────────────────────────────────────────
+    async function saveChecklist() {
+      if (!currentUser || !currentPet) return;
+      const status = document.getElementById("checklist-save-status");
+      try {
+        const docRef = doc(db, "users", currentUser.uid, "checklist", `${MONTH_KEY}_${currentPet.id || "default"}`);
+        await setDoc(docRef, { items: checkedMap, updatedAt: serverTimestamp() }, { merge: true });
+        status.textContent = "✓ 저장됨";
+        setTimeout(() => { status.textContent = ""; }, 2000);
+      } catch (e) {
+        console.error("체크리스트 저장 오류:", e);
+      }
+    }
+
+    // ─── 증상 체크 초기화 ────────────────────────────────────────────────────
+    async function initSymptoms(uid) {
+      let saved = {};
+      try {
+        const snap = await getDoc(doc(db, "users", uid, "symptoms", DATE_KEY));
+        if (snap.exists()) saved = snap.data().symptoms || {};
+      } catch (e) { console.error(e); }
+
+      symptomChecked = saved;
+      renderSymptoms(saved);
+    }
+
+    // ─── 증상 렌더링 ─────────────────────────────────────────────────────────
+    function renderSymptoms(saved) {
+      const list = document.getElementById("symptom-list");
+      list.innerHTML = SYMPTOM_ITEMS.map(item => {
+        const checked = !!saved[item.id];
+        return `
+          <div class="symptom-item ${checked ? "checked" : ""}" data-id="${item.id}">
+            <div class="check-box"></div>
+            <span class="item-label">${item.label}</span>
+          </div>
+        `;
+      }).join("");
+
+      list.querySelectorAll(".symptom-item").forEach(el => {
+        el.addEventListener("click", () => toggleSymptom(el));
+      });
+
+      updateWarning();
+    }
+
+    function toggleSymptom(el) {
+      const id = el.dataset.id;
+      const isChecked = el.classList.toggle("checked");
+      if (isChecked) symptomChecked[id] = true;
+      else delete symptomChecked[id];
+      updateWarning();
+    }
+
+    function updateWarning() {
+      const count = Object.keys(symptomChecked).length;
+      document.getElementById("warning-banner").classList.toggle("show", count >= 3);
+    }
+
+    // ─── 증상 저장 버튼 ──────────────────────────────────────────────────────
+    document.getElementById("symptom-save-btn").addEventListener("click", async () => {
+      if (!currentUser) {
+        alert("로그인 후 저장할 수 있어요.");
+        return;
+      }
+      try {
+        await setDoc(
+          doc(db, "users", currentUser.uid, "symptoms", DATE_KEY),
+          { symptoms: symptomChecked, savedAt: serverTimestamp() },
+          { merge: true }
+        );
+        const label = document.getElementById("symptom-saved-label");
+        label.textContent = `${DATE_KEY} 기록 저장됨`;
+        toast("💾 오늘 증상 기록이 저장됐어요");
+      } catch (e) {
+        alert("저장 실패: " + e.message);
+      }
+    });
+
+    // ─── 증상 초기화 ─────────────────────────────────────────────────────────
+    document.getElementById("symptom-reset-btn").addEventListener("click", () => {
+      symptomChecked = {};
+      document.querySelectorAll(".symptom-item").forEach(el => el.classList.remove("checked"));
+      document.getElementById("warning-banner").classList.remove("show");
+      document.getElementById("symptom-saved-label").textContent = "";
+    });
+
+    // ─── 토스트 ──────────────────────────────────────────────────────────────
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2500);
+    }
+  </script>
+</body>
+</html>
